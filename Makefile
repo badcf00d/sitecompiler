@@ -117,7 +117,7 @@ all: $(HTML_GZ) $(HTML_BR) $(CSS_BR) $(CSS_GZ) $(JS_BR) $(JS_GZ) $(MISC_BR) $(MI
 .SECONDEXPANSION:
 %.html.br: $$(subst $$(space),\$$(space),%).html $$(subst $$(space),\$$(space),%).html.min
 	$(info HTML Brotli: $@)
-	@brotli --force --best -o "$@" "$<.min"
+	@brotli --force --best -n -o "$@" "$<.min"
 
 .SECONDEXPANSION:
 %.html.gz: $$(subst $$(space),\$$(space),%).html $$(subst $$(space),\$$(space),%).html.min
@@ -138,7 +138,7 @@ all: $(HTML_GZ) $(HTML_BR) $(CSS_BR) $(CSS_GZ) $(JS_BR) $(JS_GZ) $(MISC_BR) $(MI
 .SECONDEXPANSION:
 %.css.br: $$(subst $$(space),\$$(space),%).css $$(subst $$(space),\$$(space),%).css.min
 	$(info CSS Brotli: $@)
-	@brotli --force --best -o "$@" "$<.min"
+	@brotli --force --best -n -o "$@" "$<.min"
 
 .SECONDEXPANSION:
 %.css.gz: $$(subst $$(space),\$$(space),%).css $$(subst $$(space),\$$(space),%).css.min
@@ -159,7 +159,7 @@ all: $(HTML_GZ) $(HTML_BR) $(CSS_BR) $(CSS_GZ) $(JS_BR) $(JS_GZ) $(MISC_BR) $(MI
 .SECONDEXPANSION:
 %.js.br: $$(subst $$(space),\$$(space),%).js $$(subst $$(space),\$$(space),%).js.min
 	$(info JS Brotli: $@)
-	@brotli --force --best -o "$@" "$<.min"
+	@brotli --force --best -n -o "$@" "$<.min"
 
 .SECONDEXPANSION:
 %.js.gz: $$(subst $$(space),\$$(space),%).js $$(subst $$(space),\$$(space),%).js.min
@@ -181,7 +181,7 @@ all: $(HTML_GZ) $(HTML_BR) $(CSS_BR) $(CSS_GZ) $(JS_BR) $(JS_GZ) $(MISC_BR) $(MI
 .SECONDEXPANSION:
 %.png.br: $$(subst $$(space),\$$(space),%).png $$(subst $$(space),\$$(space),%).png.min
 	$(info PNG Brotli: $@)
-	@brotli --force --best -o "$@" "$<.min"
+	@brotli --force --best -n -o "$@" "$<.min"
 
 .SECONDEXPANSION:
 %.png.gz: $$(subst $$(space),\$$(space),%).png $$(subst $$(space),\$$(space),%).png.min
@@ -202,12 +202,12 @@ all: $(HTML_GZ) $(HTML_BR) $(CSS_BR) $(CSS_GZ) $(JS_BR) $(JS_GZ) $(MISC_BR) $(MI
 .SECONDEXPANSION:
 %.jpeg.br: $$(subst $$(space),\$$(space),%).jpeg $$(subst $$(space),\$$(space),%).jpeg.min
 	$(info JPEG Brotli: $@)
-	@brotli --force --best -o "$@" "$<.min"
+	@brotli --force --best -n -o "$@" "$<.min"
 
 .SECONDEXPANSION:
 %.jpg.br: $$(subst $$(space),\$$(space),%).jpg $$(subst $$(space),\$$(space),%).jpg.min
 	$(info JPEG Brotli: $@)
-	@brotli --force --best -o "$@" "$<.min"
+	@brotli --force --best -n -o "$@" "$<.min"
 
 .SECONDEXPANSION:
 %.jpeg.gz: $$(subst $$(space),\$$(space),%).jpeg $$(subst $$(space),\$$(space),%).jpeg.min
@@ -242,7 +242,7 @@ all: $(HTML_GZ) $(HTML_BR) $(CSS_BR) $(CSS_GZ) $(JS_BR) $(JS_GZ) $(MISC_BR) $(MI
 .SECONDEXPANSION:
 %.gif.br: $$(subst $$(space),\$$(space),%).gif $$(subst $$(space),\$$(space),%).gif.min
 	$(info GIF Brotli: $@)
-	@brotli --force --best -o "$@" "$<.min"
+	@brotli --force --best -n -o "$@" "$<.min"
 
 .SECONDEXPANSION:
 %.gif.gz: $$(subst $$(space),\$$(space),%).gif $$(subst $$(space),\$$(space),%).gif.min
@@ -264,7 +264,7 @@ all: $(HTML_GZ) $(HTML_BR) $(CSS_BR) $(CSS_GZ) $(JS_BR) $(JS_GZ) $(MISC_BR) $(MI
 .SECONDEXPANSION:
 %.svg.br: $$(subst $$(space),\$$(space),%).svg $$(subst $$(space),\$$(space),%).svg.min
 	$(info SVG Brotli: $@)
-	@brotli --force --best -o "$@" "$<.min"
+	@brotli --force --best -n -o "$@" "$<.min"
 
 .SECONDEXPANSION:
 %.svg.gz: $$(subst $$(space),\$$(space),%).svg $$(subst $$(space),\$$(space),%).svg.min
@@ -286,7 +286,7 @@ all: $(HTML_GZ) $(HTML_BR) $(CSS_BR) $(CSS_GZ) $(JS_BR) $(JS_GZ) $(MISC_BR) $(MI
 .SECONDEXPANSION:
 %.webp.br: $$(subst $$(space),\$$(space),%).webp $$(subst $$(space),\$$(space),%).webp.min
 	$(info WEBP Brotli: $@)
-	@brotli --force --best -o "$@" "$<.min"
+	@brotli --force --best -n -o "$@" "$<.min"
 
 .SECONDEXPANSION:
 %.webp.gz: $$(subst $$(space),\$$(space),%).webp $$(subst $$(space),\$$(space),%).webp.min
@@ -316,7 +316,7 @@ all: $(HTML_GZ) $(HTML_BR) $(CSS_BR) $(CSS_GZ) $(JS_BR) $(JS_GZ) $(MISC_BR) $(MI
 .SECONDEXPANSION:
 %.br: $$(subst $$(space),\$$(space),%)
 	$(info MISC Brotli: $@)
-	@brotli --force --best -o "$@" "$<"
+	@brotli --force --best -n -o "$@" "$<"
 
 .SECONDEXPANSION:
 %.gz: $$(subst $$(space),\$$(space),%)
