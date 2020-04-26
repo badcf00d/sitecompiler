@@ -67,10 +67,11 @@ SVG_BR := $(SVG:%.svg=%.svg.br)
 SVG_MIN := $(SVG:%.svg=%.svg.min)
 
 
-WEBP := $(info Finding WEBP files...) $(shell find $(SITE_PATH) -name '*.webp' | perl -p -e 's/ /\\ /g')
+WEBP := $(info Finding WEBP files...) $(shell find $(SITE_PATH) \( -name '*.webp' -o -name '*.jpeg' -o -name '*.jpg' -o -name "*.png" \)  | perl -p -e 's/ /\\ /g' | perl -p -e 's/jpeg|jpg|png/webp/g')
 WEBP_GZ := $(WEBP:%.webp=%.webp.gz)
 WEBP_BR := $(WEBP:%.webp=%.webp.br)
 WEBP_MIN := $(WEBP:%.webp=%.webp.min)
+
 
 MISC_TYPES := -name '*.txt' \
                 -o -name '*.xml' \
@@ -90,7 +91,7 @@ MISC_GZ := $(MISC_BR:%.br=%.gz)
 
 
 .INTERMEDIATE: $(HTML_MIN) $(CSS_MIN) $(JS_MIN) $(PNG_MIN) $(JPEG_MIN) $(GIF_MIN) $(SVG_MIN)
-.PHONY: all size size-detail clean clean-webcontent clean-images misc webcontent html js css images png jpeg gif svg webp jpeg-to-webp
+.PHONY: all size depend clean clean-webcontent clean-images misc webcontent html js css images png jpeg gif svg webp
 #.SILENT:
 
 
@@ -105,8 +106,6 @@ jpeg: $(JPEG_GZ) $(JPEG_BR)
 gif: $(GIF_GZ) $(GIF_BR)
 svg: $(SVG_GZ) $(SVG_BR)
 webp: $(WEBP_GZ) $(WEBP_BR) 
-jpeg-to-webp: $(shell find $(JPEG_DIR)  \( -name '*.jpeg' -o -name '*.jpg' \)  | perl -p -e 's/ /\\ /g' | perl -p -e 's/jpeg|jpg/webp/g')
-png-to-webp: $(PNG:%.png=%.webp)
 
 misc: $(MISC_BR) $(MISC_GZ)
 all: $(HTML_GZ) $(HTML_BR) $(CSS_BR) $(CSS_GZ) $(JS_BR) $(JS_GZ) $(MISC_BR) $(MISC_GZ) $(PNG_GZ) $(PNG_BR) $(JPEG_GZ) $(JPEG_BR) $(GIF_GZ) $(GIF_BR) $(SVG_GZ) $(SVG_BR) $(WEBP_GZ) $(WEBP_BR) 
