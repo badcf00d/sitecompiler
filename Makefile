@@ -18,14 +18,18 @@ HTML_BR := $(HTML:%.html=%.html.br)
 HTML_GZ := $(HTML:%.html=%.html.gz)
 HTML_MIN := $(HTML:%.html=%.html.min)
 HTML_FLAGS := --collapse-whitespace \
+				--collapse-inline-tag-whitespace \
+				--collapse-boolean-attributes \
 				--remove-comments \
 				--remove-optional-tags \
 				--remove-redundant-attributes \
 				--remove-script-type-attributes \
 				--remove-tag-whitespace \
-				--minify-js true \
-				--use-short-doctype
-
+				--use-short-doctype \
+				--sort-attributes \
+				--sort-class-name \
+				--minify-css true \
+				--minify-js true
 
 CSS := $(info Finding CSS files...) $(shell find $(SITE_PATH) -name '*.css' | perl -p -e 's/ /\\ /g')
 CSS_BR := $(CSS:%.css=%.css.br)
