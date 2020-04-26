@@ -1,2 +1,2 @@
 # sitecompiler
-Compresses &amp; minifies web content to decrease loading times and reduce required bandwidth
+Compresses &amp; minifies web content for faster loading times and less required bandwidth
