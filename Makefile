@@ -2,8 +2,18 @@ space:=
 space+=
 SHELL:=/bin/bash
 
-HTML_DIR := ./
-HTML := $(info Finding HTML files...) $(shell find $(HTML_DIR) -name '*.html' | perl -p -e 's/ /\\ /g')
+
+CURRENT_PATH := $(subst $(lastword $(notdir $(MAKEFILE_LIST))),,$(subst $(space),\$(space),$(shell realpath '$(strip $(MAKEFILE_LIST))')))
+SITE_PATH := $(shell cat $(CURRENT_PATH).site.path 2>/dev/null)
+
+ifeq ($(strip $(SITE_PATH)),)
+    userInput := $(shell read -p "Enter directory of web site (can be relative or absolute): " userInput; echo $$userInput)
+    $(info Saving site path to $(CURRENT_PATH).site.path)
+    SITE_PATH := $(shell realpath $(userInput))
+    $(shell echo $(SITE_PATH) >> $(CURRENT_PATH).site.path)
+endif
+
+HTML := $(info Finding HTML files...) $(shell find $(SITE_PATH) -name '*.html' | perl -p -e 's/ /\\ /g')
 HTML_BR := $(HTML:%.html=%.html.br) 
 HTML_GZ := $(HTML:%.html=%.html.gz)
 HTML_MIN := $(HTML:%.html=%.html.min)
@@ -17,59 +27,47 @@ HTML_FLAGS := --collapse-whitespace \
 				--use-short-doctype
 
 
-
-CSS_DIR := ./
-CSS := $(info Finding CSS files...) $(shell find $(CSS_DIR) -name '*.css' | perl -p -e 's/ /\\ /g')
+CSS := $(info Finding CSS files...) $(shell find $(SITE_PATH) -name '*.css' | perl -p -e 's/ /\\ /g')
 CSS_BR := $(CSS:%.css=%.css.br)
 CSS_GZ := $(CSS:%.css=%.css.gz)
 CSS_MIN := $(CSS:%.css=%.css.min)
 
 
-
-
-JS_DIR := ./
-JS := $(info Finding JS files...) $(shell find $(JS_DIR) -name '*.js' | perl -p -e 's/ /\\ /g')
+JS := $(info Finding JS files...) $(shell find $(SITE_PATH) -name '*.js' | perl -p -e 's/ /\\ /g')
 JS_BR := $(JS:%.js=%.js.br)
 JS_GZ := $(JS:%.js=%.js.gz)
 JS_MIN := $(JS:%.js=%.js.min)
 JS_FLAGS := --compress --mangle
 
 
-
-PNG_DIR := ./
-PNG := $(info Finding PNG files...) $(shell find $(PNG_DIR) -name '*.png' | perl -p -e 's/ /\\ /g')
+PNG := $(info Finding PNG files...) $(shell find $(SITE_PATH) -name '*.png' | perl -p -e 's/ /\\ /g')
 PNG_GZ := $(PNG:%.png=%.png.gz)
 PNG_BR := $(PNG:%.png=%.png.br)
 PNG_MIN := $(PNG:%.png=%.png.min)
 
 
-JPEG_DIR := ./
-JPEG_GZ := $(info Finding JPEG files...) $(shell find $(JPEG_DIR)  \( -name '*.jpeg' -o -name '*.jpg' \)  | perl -p -e 's/ /\\ /g' | perl -p -e 's/\n/.gz\n/')
+JPEG_GZ := $(info Finding JPEG files...) $(shell find $(SITE_PATH)  \( -name '*.jpeg' -o -name '*.jpg' \)  | perl -p -e 's/ /\\ /g' | perl -p -e 's/\n/.gz\n/')
 JPEG_BR := $(JPEG_GZ:%.gz=%.br)
 JPEG_MIN := $(JPEG_GZ:%.gz=%.min)
 
 
-GIF_DIR := ./
-GIF := $(info Finding GIF files...) $(shell find $(GIF_DIR) -name '*.gif' | perl -p -e 's/ /\\ /g')
+GIF := $(info Finding GIF files...) $(shell find $(SITE_PATH) -name '*.gif' | perl -p -e 's/ /\\ /g')
 GIF_GZ := $(GIF:%.gif=%.gif.gz)
 GIF_BR := $(GIF:%.gif=%.gif.br)
 GIF_MIN := $(GIF:%.gif=%.gif.min)
 
 
-SVG_DIR := ./
-SVG := $(info Finding SVG files...) $(shell find $(SVG_DIR) -name '*.svg' | perl -p -e 's/ /\\ /g')
+SVG := $(info Finding SVG files...) $(shell find $(SITE_PATH) -name '*.svg' | perl -p -e 's/ /\\ /g')
 SVG_GZ := $(SVG:%.svg=%.svg.gz)
 SVG_BR := $(SVG:%.svg=%.svg.br)
 SVG_MIN := $(SVG:%.svg=%.svg.min)
 
 
-WEBP_DIR := ./
-WEBP := $(info Finding WEBP files...) $(shell find $(WEBP_DIR) -name '*.webp' | perl -p -e 's/ /\\ /g')
+WEBP := $(info Finding WEBP files...) $(shell find $(SITE_PATH) -name '*.webp' | perl -p -e 's/ /\\ /g')
 WEBP_GZ := $(WEBP:%.webp=%.webp.gz)
 WEBP_BR := $(WEBP:%.webp=%.webp.br)
 WEBP_MIN := $(WEBP:%.webp=%.webp.min)
 
-MISC_DIR := ./
 MISC_TYPES := -name '*.txt' \
                 -o -name '*.xml' \
                 -o -name '*.csv' \
@@ -79,7 +77,7 @@ MISC_TYPES := -name '*.txt' \
                 -o -name '*.ttf' \
                 -o -name '*.webmanifest'
 
-MISC_BR := $(info Finding miscellaneous files...) $(shell find $(MISC_DIR) \( $(MISC_TYPES) \) | perl -p -e 's/ /\\ /g' | perl -p -e 's/\n/.br\n/')
+MISC_BR := $(info Finding miscellaneous files...) $(shell find $(SITE_PATH) \( $(MISC_TYPES) \) | perl -p -e 's/ /\\ /g' | perl -p -e 's/\n/.br\n/')
 MISC_GZ := $(MISC_BR:%.br=%.gz)
 
 
@@ -446,28 +444,28 @@ clean-images:
 #
 # Size Listings
 #
-size: SIZE_GZ = $(shell shopt -s globstar && du -cbs **/*.gz 2>/dev/null | tail -1 | grep -o '[0-9]*')
-size: SIZE_BR = $(shell shopt -s globstar && du -cbs **/*.br 2>/dev/null | tail -1 | grep -o '[0-9]*')
-size: SIZE_NON_COMP = $(shell shopt -s globstar && du -cbs ** --exclude=*.gz --exclude=*.br | tail -1 | grep -o '[0-9]*')
+size: SIZE_GZ = $(shell shopt -s globstar && du -cbs $(SITE_PATH)**/*.gz 2>/dev/null | tail -1 | grep -o '[0-9]*')
+size: SIZE_BR = $(shell shopt -s globstar && du -cbs $(SITE_PATH)**/*.br 2>/dev/null | tail -1 | grep -o '[0-9]*')
+size: SIZE_NON_COMP = $(shell shopt -s globstar && du -cbs $(SITE_PATH)** --exclude=*.gz --exclude=*.br | tail -1 | grep -o '[0-9]*')
 size: 
 	$(info Calculating size data...)
 	$(info )
 	$(info Size of non-compressed files: $(shell echo $$(( $(SIZE_NON_COMP) / 1024 ))) KB)
-	@find -type f ! -name "*.br" ! -name "*.gz" -print0 | \
+	@find $(SITE_PATH) -type f ! -name "*.br" ! -name "*.gz" -print0 | \
 		du -bax --files0-from=- | \
 		sort -k 1 -n -r | \
 		head -n 15 | \
 		awk 'BEGIN {print "\nTop 15 largest non-compressed files:\nSize (Kbytes) | Filename"} {printf "%-13.1f | %s\n", $$1/(1024), $$2}'
 
 	$(info Size of gzip files: $(shell echo $$(( $(SIZE_GZ) / 1024 ))) KB, $(shell echo $$(( 100 - (($(SIZE_GZ) * 100) / $(SIZE_NON_COMP)) )))% smaller)
-	@find -type f -name "*.gz" -print0 | \
+	@find $(SITE_PATH) -type f -name "*.gz" -print0 | \
 		du -bax --files0-from=- | \
 		sort -k 1 -n -r | \
 		head -n 15 | \
 		awk 'BEGIN {print "\nTop 15 largest gzip files:\nSize (Kbytes) | Filename"} {printf "%-13.1f | %s\n", $$1/(1024), $$2}'
 
 	$(info Size of brotli files: $(shell echo $$(( $(SIZE_BR) / 1024 ))) KB, $(shell echo $$(( 100 - (($(SIZE_BR) * 100) / $(SIZE_NON_COMP)) )))% smaller)
-	@find -type f -name "*.br" -print0 | \
+	@find $(SITE_PATH) -type f -name "*.br" -print0 | \
 		du -bax --files0-from=- | \
 		sort -k 1 -n -r | \
 		head -n 15 | \
