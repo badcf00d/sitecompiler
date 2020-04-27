@@ -11,14 +11,14 @@ sitecompiler is a suite of several minifiers, general purpose compressors, and i
 
  - To make use of newer image & video codecs you may need to make some changes to the web content itself, especially when trying to maintain compatability for devices that do not support them.
    - Making use of webp images is relatively simple:
-     - In HTML you can use the `<picture>` and `<source>` attributes like this:
+     - In HTML you can use the `<picture>` and `<source>` attributes like this to serve either the jpg or webp depending on what the client supports
        ```
-       <picture class="style-image">
+       <picture>
            <source srcset="images/picture.webp" type="image/webp">
            <img src="images/picture.jpg" alt="Pretty Picture"> 
        </picture> 
        ```
-     - In CSS you can use `modernizr` and include `.webp` and `.no-webp` versions of styles like this:
+     - In CSS you can use `modernizr` and include `.webp` and `.no-webp` versions of styles like this to serve either the jpg or webp depending on what the client supports
        ```
        .no-webp .style-image {
            background-image: url("image.jpg");
