@@ -8,7 +8,7 @@ sitecompiler is a Makefile that uses a suite of several minifiers, general purpo
  - `make` will run the default recipe which is `webcontent` which processes `.html` `.css` and `.js` files, once sitecompiler is done you will have a `*.gz` and `*.br` version of all the web content files in your website that should be significantly smaller than they were originally. 
    - The first time you run site compiler it will ask for the directory of your website, enter `.` for the current directory.
    - As with all `make` things, run `make -jN` with `N` being the number of jobs to run in parallel for more fastness.
-
+ - When you update any the files in your website, run `make` again and the new files will be processed.
 
 
 #### More options
