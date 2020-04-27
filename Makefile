@@ -73,6 +73,9 @@ WEBP_BR := $(WEBP:%.webp=%.webp.br)
 WEBP_MIN := $(WEBP:%.webp=%.webp.min)
 
 
+AV1 := $(info Finding AV1 files...) $(shell find $(SITE_PATH) \( -name '*.mkv' -o -name '*.mp4' -o -name '*.webm' \)  | perl -p -e 's/ /\\ /g' | perl -p -e 's/webm/av1.webm/g' | perl -p -e 's/mkv|mp4/webm/g')
+
+
 MISC_TYPES := -name '*.txt' \
                 -o -name '*.xml' \
                 -o -name '*.csv' \
@@ -91,7 +94,7 @@ MISC_GZ := $(MISC_BR:%.br=%.gz)
 
 
 .INTERMEDIATE: $(HTML_MIN) $(CSS_MIN) $(JS_MIN) $(PNG_MIN) $(JPEG_MIN) $(GIF_MIN) $(SVG_MIN)
-.PHONY: all size depend clean clean-webcontent clean-images misc webcontent html js css images png jpeg gif svg webp
+.PHONY: all size depend clean clean-webcontent clean-images misc webcontent html js css images png jpeg gif svg webp av1
 #.SILENT:
 
 
@@ -106,9 +109,10 @@ jpeg: $(JPEG_GZ) $(JPEG_BR)
 gif: $(GIF_GZ) $(GIF_BR)
 svg: $(SVG_GZ) $(SVG_BR)
 webp: $(WEBP_GZ) $(WEBP_BR) 
+av1: $(AV1)
 
 misc: $(MISC_BR) $(MISC_GZ)
-all: $(HTML_GZ) $(HTML_BR) $(CSS_BR) $(CSS_GZ) $(JS_BR) $(JS_GZ) $(MISC_BR) $(MISC_GZ) $(PNG_GZ) $(PNG_BR) $(JPEG_GZ) $(JPEG_BR) $(GIF_GZ) $(GIF_BR) $(SVG_GZ) $(SVG_BR) $(WEBP_GZ) $(WEBP_BR) 
+all: $(HTML_GZ) $(HTML_BR) $(CSS_BR) $(CSS_GZ) $(JS_BR) $(JS_GZ) $(MISC_BR) $(MISC_GZ) $(PNG_GZ) $(PNG_BR) $(JPEG_GZ) $(JPEG_BR) $(GIF_GZ) $(GIF_BR) $(SVG_GZ) $(SVG_BR) $(WEBP_GZ) $(WEBP_BR) $(AV1)
 
 
 
@@ -309,6 +313,53 @@ all: $(HTML_GZ) $(HTML_BR) $(CSS_BR) $(CSS_GZ) $(JS_BR) $(JS_GZ) $(MISC_BR) $(MI
 %.webp: $$(subst $$(space),\$$(space),%).png
 	$(info WEBP Converter: $@)
 	@cwebp -q 83 -alpha_q 83 -pass 10 -m 6 -sharp_yuv -quiet "$<" -o "$@"
+
+
+
+#
+# AV1
+#
+.SECONDEXPANSION:
+%.webm: $$(subst $$(space),\$$(space),%).mkv
+	$(info AV1 Encoder: $@)
+	@if [[ $$(ffprobe -v error -select_streams v:0 -show_entries stream=codec_name -of default=noprint_wrappers=1:nokey=1 "$<") = "av1" ]] ; then \
+		echo Skipping, already AV1 $<; \
+	else \
+		echo; \
+		read -p "Would you like produce a version of $(notdir $<) encoded with AV1? This should produce a smaller file but it will take a while, very roughly a minute per second of video [y/n]: " prompt ; \
+		if [ "$$prompt" != "$${prompt#[Yy]}" ] ; then \
+			ffmpeg -i "$<" -v error -stats -map 0:0 -c:v libaom-av1 -crf 30 -b:v 2000k -cpu-used 5 -row-mt 1 \
+			-enable-cdef 1 -enable-global-motion 1 -enable-intrabc 1 -frame-parallel 0 -strict experimental -c:a libopus "$@" -b:a 50k; \
+		fi; \
+	fi
+
+.SECONDEXPANSION:
+%.webm: $$(subst $$(space),\$$(space),%).mp4
+	$(info AV1 Encoder: $@)
+	@if [[ $$(ffprobe -v error -select_streams v:0 -show_entries stream=codec_name -of default=noprint_wrappers=1:nokey=1 "$<") = "av1" ]] ; then \
+		echo Skipping, already AV1 $<; \
+	else \
+		echo; \
+		read -p "Would you like produce a version of $(notdir $<) encoded with AV1? This should produce a smaller file but it will take a while, very roughly a minute per second of video [y/n]: " prompt ; \
+		if [ "$$prompt" != "$${prompt#[Yy]}" ] ; then \
+			ffmpeg -i "$<" -v error -stats -map 0:0 -c:v libaom-av1 -crf 30 -b:v 2000k -cpu-used 5 -row-mt 1 \
+			-enable-cdef 1 -enable-global-motion 1 -enable-intrabc 1 -frame-parallel 0 -strict experimental -c:a libopus "$@" -b:a 50k; \
+		fi; \
+	fi
+
+.SECONDEXPANSION:
+%.av1.webm: $$(subst $$(space),\$$(space),%).webm
+	$(info AV1 Encoder: $@)
+	@if [[ $$(ffprobe -v error -select_streams v:0 -show_entries stream=codec_name -of default=noprint_wrappers=1:nokey=1 "$<") = "av1" ]] ; then \
+		echo Skipping, already AV1 $<; \
+	else \
+		echo; \
+		read -p "Would you like produce a version of $(notdir $<) encoded with AV1? This should produce a smaller file but it will take a while, very roughly a minute per second of video [y/n]: " prompt ; \
+		if [ "$$prompt" != "$${prompt#[Yy]}" ] ; then \
+			ffmpeg -i "$<" --v error -stats -map 0:0 -c:v libaom-av1 -crf 30 -b:v 2000k -cpu-used 5 -row-mt 1 \
+			-enable-cdef 1 -enable-global-motion 1 -enable-intrabc 1 -frame-parallel 0 -strict experimental -c:a libopus "$@" -b:a 50k; \
+		fi; \
+	fi
 
 
 #

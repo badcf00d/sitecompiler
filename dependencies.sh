@@ -31,7 +31,7 @@ if ! which optipng > /dev/null; then
 fi
 if ! which ffmpeg > /dev/null; then
 	echo "Installing FFmpeg"
-	sudo apt-get install -y ffmpeg 1>/dev/null
+	sudo apt-get install -y ffmpeg ffprobe 1>/dev/null
 fi
 if ! ffmpeg -h 2>&1 | grep -o "enable-libaom" > /dev/null; then
 	echo "Doesn't look like that ffmpeg build has libaom enabled, please try and find one that does, or build your own"
