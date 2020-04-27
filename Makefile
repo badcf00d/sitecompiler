@@ -175,7 +175,7 @@ all: $(HTML_GZ) $(HTML_BR) $(CSS_BR) $(CSS_GZ) $(JS_BR) $(JS_GZ) $(MISC_BR) $(MI
 .SECONDEXPANSION:
 %.js.min: $$(subst $$(space),\$$(space),%).js
 	$(info JS Minifier: $@)
-	@uglifyjs $(JS_FLAGS) -o "$<.min" -- "$<"
+	@terser $(JS_FLAGS) -o "$<.min" -- "$<"
 
 
 

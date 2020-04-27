@@ -62,8 +62,8 @@ fi
 fi
 
 
-if ! which uglifyjs > /dev/null; then
-	echo "Installing uglify-js"
+if ! which terser > /dev/null; then
+	echo "Installing terser"
 if ! which node > /dev/null; then
 	echo "Installing node (This may take a minute or two)"
 	curl -sL https://deb.nodesource.com/setup_13.x | sudo -E bash - 1>/dev/null
@@ -73,7 +73,7 @@ if ! which npm > /dev/null; then
 	echo "Installing npm (This may take a minute or two)"
 	curl -L https://npmjs.org/install.sh | sudo sh 1>/dev/null
 fi
-	sudo npm install uglify-js -g 1>/dev/null
+	sudo npm install terser -g 1>/dev/null
 fi
 
 
