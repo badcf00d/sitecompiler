@@ -92,7 +92,7 @@ fi
 fi
 
 
-if ! which html-minifier > /dev/null; then
+if ! which html-minifier-terser > /dev/null; then
 	echo "Installing html-minifier"
 if ! which node > /dev/null; then
 	echo "Installing node (This may take a minute or two)"
@@ -103,7 +103,7 @@ if ! which npm > /dev/null; then
 	echo "Installing npm (This may take a minute or two)"
 	curl -L https://npmjs.org/install.sh | sudo sh 1>/dev/null
 fi
-	sudo npm install html-minifier -g 1>/dev/null
+	sudo npm install html-minifier-terser -g 1>/dev/null
 fi
 
 echo "Dependencies up-to-date"

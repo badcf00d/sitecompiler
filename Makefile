@@ -1,7 +1,10 @@
 space:= 
 space+=
 SHELL:=/bin/bash
-
+RED=\033[0;31m
+NC=\033[0m
+ERROR := @if ! 
+HANDLER = 2>/dev/null; then echo -e "[${RED}ERROR${NC}] $@, copying original file"; cp "$<" "$<.min"; fi
 
 CURRENT_PATH := $(subst $(lastword $(notdir $(MAKEFILE_LIST))),,$(subst $(space),\$(space),$(shell realpath '$(strip $(MAKEFILE_LIST))')))
 SITE_PATH := $(shell cat $(CURRENT_PATH).site.path 2>/dev/null)
@@ -13,7 +16,7 @@ ifeq ($(strip $(SITE_PATH)),)
     $(shell echo $(SITE_PATH) >> $(CURRENT_PATH).site.path)
 endif
 
-HTML := $(info Finding HTML files...) $(shell find $(SITE_PATH) -name '*.html' | perl -p -e 's/ /\\ /g')
+HTML := $(info Finding HTML files...) $(shell find $(SITE_PATH) -type f -name '*.html' | perl -p -e 's/ /\\ /g')
 HTML_BR := $(HTML:%.html=%.html.br) 
 HTML_GZ := $(HTML:%.html=%.html.gz)
 HTML_MIN := $(HTML:%.html=%.html.min)
@@ -31,49 +34,49 @@ HTML_FLAGS := --collapse-whitespace \
 				--minify-css true \
 				--minify-js true
 
-CSS := $(info Finding CSS files...) $(shell find $(SITE_PATH) -name '*.css' | perl -p -e 's/ /\\ /g')
+CSS := $(info Finding CSS files...) $(shell find $(SITE_PATH) -type f -name '*.css' | perl -p -e 's/ /\\ /g')
 CSS_BR := $(CSS:%.css=%.css.br)
 CSS_GZ := $(CSS:%.css=%.css.gz)
 CSS_MIN := $(CSS:%.css=%.css.min)
 
 
-JS := $(info Finding JS files...) $(shell find $(SITE_PATH) -name '*.js' | perl -p -e 's/ /\\ /g')
+JS := $(info Finding JS files...) $(shell find $(SITE_PATH) -type f -name '*.js' | perl -p -e 's/ /\\ /g')
 JS_BR := $(JS:%.js=%.js.br)
 JS_GZ := $(JS:%.js=%.js.gz)
 JS_MIN := $(JS:%.js=%.js.min)
 JS_FLAGS := --compress --mangle
 
 
-PNG := $(info Finding PNG files...) $(shell find $(SITE_PATH) -name '*.png' | perl -p -e 's/ /\\ /g')
+PNG := $(info Finding PNG files...) $(shell find $(SITE_PATH) -type f -name '*.png' | perl -p -e 's/ /\\ /g')
 PNG_GZ := $(PNG:%.png=%.png.gz)
 PNG_BR := $(PNG:%.png=%.png.br)
 PNG_MIN := $(PNG:%.png=%.png.min)
 
 
-JPEG_GZ := $(info Finding JPEG files...) $(shell find $(SITE_PATH)  \( -name '*.jpeg' -o -name '*.jpg' \)  | perl -p -e 's/ /\\ /g' | perl -p -e 's/\n/.gz\n/')
+JPEG_GZ := $(info Finding JPEG files...) $(shell find $(SITE_PATH) -type f  \( -name '*.jpeg' -o -name '*.jpg' \)  | perl -p -e 's/ /\\ /g' | perl -p -e 's/\n/.gz\n/')
 JPEG_BR := $(JPEG_GZ:%.gz=%.br)
 JPEG_MIN := $(JPEG_GZ:%.gz=%.min)
 
 
-GIF := $(info Finding GIF files...) $(shell find $(SITE_PATH) -name '*.gif' | perl -p -e 's/ /\\ /g')
+GIF := $(info Finding GIF files...) $(shell find $(SITE_PATH) -type f -name '*.gif' | perl -p -e 's/ /\\ /g')
 GIF_GZ := $(GIF:%.gif=%.gif.gz)
 GIF_BR := $(GIF:%.gif=%.gif.br)
 GIF_MIN := $(GIF:%.gif=%.gif.min)
 
 
-SVG := $(info Finding SVG files...) $(shell find $(SITE_PATH) -name '*.svg' | perl -p -e 's/ /\\ /g')
+SVG := $(info Finding SVG files...) $(shell find $(SITE_PATH) -type f -name '*.svg' | perl -p -e 's/ /\\ /g')
 SVG_GZ := $(SVG:%.svg=%.svg.gz)
 SVG_BR := $(SVG:%.svg=%.svg.br)
 SVG_MIN := $(SVG:%.svg=%.svg.min)
 
 
-WEBP := $(info Finding WEBP files...) $(shell find $(SITE_PATH) \( -name '*.webp' -o -name '*.jpeg' -o -name '*.jpg' -o -name "*.png" \)  | perl -p -e 's/ /\\ /g' | perl -p -e 's/jpeg|jpg|png/webp/g')
+WEBP := $(info Finding WEBP files...) $(shell find $(SITE_PATH) -type f \( -name '*.webp' -o -name '*.jpeg' -o -name '*.jpg' -o -name "*.png" \)  | perl -p -e 's/ /\\ /g' | perl -p -e 's/jpeg\n|jpg\n|png\n/webp\n/g')
 WEBP_GZ := $(WEBP:%.webp=%.webp.gz)
 WEBP_BR := $(WEBP:%.webp=%.webp.br)
 WEBP_MIN := $(WEBP:%.webp=%.webp.min)
 
 
-AV1 := $(info Finding AV1 files...) $(shell find $(SITE_PATH) \( -name '*.mkv' -o -name '*.mp4' -o -name '*.webm' \)  | perl -p -e 's/ /\\ /g' | perl -p -e 's/webm/av1.webm/g' | perl -p -e 's/mkv|mp4/webm/g')
+AV1 := $(info Finding AV1 files...) $(shell find $(SITE_PATH) -type f \( -name '*.mkv' -o -name '*.mp4' -o -name '*.webm' \)  | perl -p -e 's/ /\\ /g' | perl -p -e 's/webm\n/av1.webm\n/g' | perl -p -e 's/mkv\n|mp4\n/webm\n/g')
 
 
 MISC_TYPES := -name '*.txt' \
@@ -85,7 +88,7 @@ MISC_TYPES := -name '*.txt' \
                 -o -name '*.ttf' \
                 -o -name '*.webmanifest'
 
-MISC_BR := $(info Finding miscellaneous files...) $(shell find $(SITE_PATH) \( $(MISC_TYPES) \) | perl -p -e 's/ /\\ /g' | perl -p -e 's/\n/.br\n/')
+MISC_BR := $(info Finding miscellaneous files...) $(shell find $(SITE_PATH) -type f \( $(MISC_TYPES) \) | perl -p -e 's/ /\\ /g' | perl -p -e 's/\n/.br\n/')
 MISC_GZ := $(MISC_BR:%.br=%.gz)
 
 
@@ -121,19 +124,19 @@ all: $(HTML_GZ) $(HTML_BR) $(CSS_BR) $(CSS_GZ) $(JS_BR) $(JS_GZ) $(MISC_BR) $(MI
 #
 .SECONDEXPANSION:
 %.html.br: $$(subst $$(space),\$$(space),%).html $$(subst $$(space),\$$(space),%).html.min
-	$(info HTML Brotli: $@)
+	$(info HTML Brotli: $(notdir $@))
 	@brotli --force --best -n -o "$@" "$<.min"
 
 .SECONDEXPANSION:
 %.html.gz: $$(subst $$(space),\$$(space),%).html $$(subst $$(space),\$$(space),%).html.min
-	$(info HTML Zopfli: $@)
+	$(info HTML Zopfli: $(notdir $@))
 	@zopfli --i15 "$<.min"
 	@mv -f "$<.min.gz" "$@"
 
 .SECONDEXPANSION:
 %.html.min: $$(subst $$(space),\$$(space),%).html
-	$(info HTML Minifier: $@)
-	@html-minifier $(HTML_FLAGS) "$<" -o "$<.min"
+	$(info HTML Minifier: $(notdir $@))
+	$(ERROR) html-minifier-terser $(HTML_FLAGS) "$<" -o "$<.min" $(HANDLER)
 
 
 
@@ -142,19 +145,19 @@ all: $(HTML_GZ) $(HTML_BR) $(CSS_BR) $(CSS_GZ) $(JS_BR) $(JS_GZ) $(MISC_BR) $(MI
 #
 .SECONDEXPANSION:
 %.css.br: $$(subst $$(space),\$$(space),%).css $$(subst $$(space),\$$(space),%).css.min
-	$(info CSS Brotli: $@)
+	$(info CSS Brotli: $(notdir $@))
 	@brotli --force --best -n -o "$@" "$<.min"
 
 .SECONDEXPANSION:
 %.css.gz: $$(subst $$(space),\$$(space),%).css $$(subst $$(space),\$$(space),%).css.min
-	$(info CSS Zopfli: $@)
+	$(info CSS Zopfli: $(notdir $@))
 	@zopfli --i15 "$<.min"
 	@mv -f "$<.min.gz" "$@"
 
 .SECONDEXPANSION:
 %.css.min: $$(subst $$(space),\$$(space),%).css
-	$(info CSS Minifier: $@)
-	@cleancss -O2 -o "$<.min" "$<" 
+	$(info CSS Minifier: $(notdir $@))
+	$(ERROR) cleancss -O2 -o "$<.min" "$<" $(HANDLER)
 
 
 
@@ -163,19 +166,19 @@ all: $(HTML_GZ) $(HTML_BR) $(CSS_BR) $(CSS_GZ) $(JS_BR) $(JS_GZ) $(MISC_BR) $(MI
 #
 .SECONDEXPANSION:
 %.js.br: $$(subst $$(space),\$$(space),%).js $$(subst $$(space),\$$(space),%).js.min
-	$(info JS Brotli: $@)
+	$(info JS Brotli: $(notdir $@))
 	@brotli --force --best -n -o "$@" "$<.min"
 
 .SECONDEXPANSION:
 %.js.gz: $$(subst $$(space),\$$(space),%).js $$(subst $$(space),\$$(space),%).js.min
-	$(info JS Zopfli: $@)
+	$(info JS Zopfli: $(notdir $@))
 	@zopfli --i15 "$<.min"
 	@mv -f "$<.min.gz" "$@"
 
 .SECONDEXPANSION:
 %.js.min: $$(subst $$(space),\$$(space),%).js
-	$(info JS Minifier: $@)
-	@terser $(JS_FLAGS) -o "$<.min" -- "$<"
+	$(info JS Minifier: $(notdir $@))
+	$(ERROR) terser $(JS_FLAGS) -o "$<.min" -- "$<" $(HANDLER)
 
 
 
@@ -185,19 +188,19 @@ all: $(HTML_GZ) $(HTML_BR) $(CSS_BR) $(CSS_GZ) $(JS_BR) $(JS_GZ) $(MISC_BR) $(MI
 #
 .SECONDEXPANSION:
 %.png.br: $$(subst $$(space),\$$(space),%).png $$(subst $$(space),\$$(space),%).png.min
-	$(info PNG Brotli: $@)
+	$(info PNG Brotli: $(notdir $@))
 	@brotli --force --best -n -o "$@" "$<.min"
 
 .SECONDEXPANSION:
 %.png.gz: $$(subst $$(space),\$$(space),%).png $$(subst $$(space),\$$(space),%).png.min
-	$(info PNG Zopfli: $@)
+	$(info PNG Zopfli: $(notdir $@))
 	@zopfli --i15 "$<.min"
 	@mv -f "$<.min.gz" "$@"
 
 .SECONDEXPANSION:
 %.png.min: $$(subst $$(space),\$$(space),%).png
-	$(info PNG Minifier: $@)
-	@optipng -o7 -clobber -silent -preserve -strip all "$<" -out "$<.min"
+	$(info PNG Minifier: $(notdir $@))
+	$(ERROR) optipng -o7 -clobber -silent -preserve -strip all "$<" -out "$<.min" $(HANDLER)
 
 
 
@@ -206,37 +209,37 @@ all: $(HTML_GZ) $(HTML_BR) $(CSS_BR) $(CSS_GZ) $(JS_BR) $(JS_GZ) $(MISC_BR) $(MI
 #
 .SECONDEXPANSION:
 %.jpeg.br: $$(subst $$(space),\$$(space),%).jpeg $$(subst $$(space),\$$(space),%).jpeg.min
-	$(info JPEG Brotli: $@)
+	$(info JPEG Brotli: $(notdir $@))
 	@brotli --force --best -n -o "$@" "$<.min"
 
 .SECONDEXPANSION:
 %.jpg.br: $$(subst $$(space),\$$(space),%).jpg $$(subst $$(space),\$$(space),%).jpg.min
-	$(info JPEG Brotli: $@)
+	$(info JPEG Brotli: $(notdir $@))
 	@brotli --force --best -n -o "$@" "$<.min"
 
 .SECONDEXPANSION:
 %.jpeg.gz: $$(subst $$(space),\$$(space),%).jpeg $$(subst $$(space),\$$(space),%).jpeg.min
-	$(info JPEG Zopfli: $@)
+	$(info JPEG Zopfli: $(notdir $@))
 	@zopfli --i15 "$<.min"
 	@mv -f "$<.min.gz" "$@"
 
 .SECONDEXPANSION:
 %.jpg.gz: $$(subst $$(space),\$$(space),%).jpg $$(subst $$(space),\$$(space),%).jpg.min
-	$(info JPEG Zopfli: $@)
+	$(info JPEG Zopfli: $(notdir $@))
 	@zopfli --i15 "$<.min"
 	@mv -f "$<.min.gz" "$@"
 
 .SECONDEXPANSION:
 %.jpeg.min: $$(subst $$(space),\$$(space),%).jpeg
-	$(info JPEG Optimizer: $@)
+	$(info JPEG Optimizer: $(notdir $@))
 	@cp "$<" "$<.min"
-	@jpegoptim -q -s -m 83 -T 5 "$<.min"
+	$(ERROR) jpegoptim -q -s -m 83 -T 5 "$<.min" $(HANDLER)
 
 .SECONDEXPANSION:
 %.jpg.min: $$(subst $$(space),\$$(space),%).jpg
-	$(info JPEG Optimizer: $@)
+	$(info JPEG Optimizer: $(notdir $@))
 	@cp "$<" "$<.min"
-	@jpegoptim -q -s -m 83 -T 5 "$<.min"
+	$(ERROR) jpegoptim -q -s -m 83 -T 5 "$<.min" $(HANDLER)
 
 
 
@@ -246,19 +249,19 @@ all: $(HTML_GZ) $(HTML_BR) $(CSS_BR) $(CSS_GZ) $(JS_BR) $(JS_GZ) $(MISC_BR) $(MI
 #
 .SECONDEXPANSION:
 %.gif.br: $$(subst $$(space),\$$(space),%).gif $$(subst $$(space),\$$(space),%).gif.min
-	$(info GIF Brotli: $@)
+	$(info GIF Brotli: $(notdir $@))
 	@brotli --force --best -n -o "$@" "$<.min"
 
 .SECONDEXPANSION:
 %.gif.gz: $$(subst $$(space),\$$(space),%).gif $$(subst $$(space),\$$(space),%).gif.min
-	$(info GIF Zopfli: $@)
+	$(info GIF Zopfli: $(notdir $@))
 	@zopfli --i15 "$<.min"
 	@mv -f "$<.min.gz" "$@"
 
 .SECONDEXPANSION:
 %.gif.min: $$(subst $$(space),\$$(space),%).gif
-	$(info GIF Optimizer: $@)
-	@gifsicle -o "$<.min" -O3 --careful --no-comments --no-names --same-delay --same-loopcount --no-warnings -- $<
+	$(info GIF Optimizer: $(notdir $@))
+	$(ERROR) gifsicle -o "$<.min" -O3 --careful --no-comments --no-names --same-delay --same-loopcount --no-warnings -- "$<" $(HANDLER)
 
 
 
@@ -268,19 +271,19 @@ all: $(HTML_GZ) $(HTML_BR) $(CSS_BR) $(CSS_GZ) $(JS_BR) $(JS_GZ) $(MISC_BR) $(MI
 #
 .SECONDEXPANSION:
 %.svg.br: $$(subst $$(space),\$$(space),%).svg $$(subst $$(space),\$$(space),%).svg.min
-	$(info SVG Brotli: $@)
+	$(info SVG Brotli: $(notdir $@))
 	@brotli --force --best -n -o "$@" "$<.min"
 
 .SECONDEXPANSION:
 %.svg.gz: $$(subst $$(space),\$$(space),%).svg $$(subst $$(space),\$$(space),%).svg.min
-	$(info SVG Zopfli: $@)
+	$(info SVG Zopfli: $(notdir $@))
 	@zopfli --i15 "$<.min"
 	@mv -f "$<.min.gz" "$@"
 
 .SECONDEXPANSION:
 %.svg.min: $$(subst $$(space),\$$(space),%).svg
-	$(info SVG Optimizer: $@)
-	@svgcleaner --copy-on-error --multipass --quiet "$<" "$<.min.svg" 2>/dev/null
+	$(info SVG Optimizer: $(notdir $@))
+	$(ERROR) svgcleaner --copy-on-error --multipass --quiet "$<" "$<.min.svg" 2>/dev/null $(HANDLER)
 	@mv -f "$<.min.svg" "$<.min"
 
 
@@ -290,29 +293,34 @@ all: $(HTML_GZ) $(HTML_BR) $(CSS_BR) $(CSS_GZ) $(JS_BR) $(JS_GZ) $(MISC_BR) $(MI
 #
 .SECONDEXPANSION:
 %.webp.br: $$(subst $$(space),\$$(space),%).webp $$(subst $$(space),\$$(space),%).webp.min
-	$(info WEBP Brotli: $@)
+	$(info WEBP Brotli: $(notdir $@))
 	@brotli --force --best -n -o "$@" "$<.min"
 
 .SECONDEXPANSION:
 %.webp.gz: $$(subst $$(space),\$$(space),%).webp $$(subst $$(space),\$$(space),%).webp.min
-	$(info WEBP Zopfli: $@)
+	$(info WEBP Zopfli: $(notdir $@))
 	@zopfli --i15 "$<.min"
 	@mv -f "$<.min.gz" "$@"
 
 .SECONDEXPANSION:
 %.webp.min: $$(subst $$(space),\$$(space),%).webp
-	$(info WEBP Optimizer: $@)
-	@cwebp -q 83 -alpha_q 83 -pass 10 -m 6 -sharp_yuv -quiet "$<" -o "$<.min"
+	$(info WEBP Optimizer: $(notdir $@))
+	$(ERROR) cwebp -q 83 -alpha_q 83 -pass 10 -m 6 -sharp_yuv -quiet "$<" -o "$<.min" $(HANDLER)
 
 .SECONDEXPANSION:
 %.webp: $$(subst $$(space),\$$(space),%).jpg
-	$(info WEBP Converter: $@)
-	@cwebp -q 83 -alpha_q 83 -pass 10 -m 6 -sharp_yuv -quiet "$<" -o "$@"
+	$(info WEBP Converter: $(notdir $@))
+	$(ERROR) cwebp -q 83 -alpha_q 83 -pass 10 -m 6 -sharp_yuv -quiet "$<" -o "$@" $(HANDLER)
+
+.SECONDEXPANSION:
+%.webp: $$(subst $$(space),\$$(space),%).jpeg
+	$(info WEBP Converter: $(notdir $@))
+	$(ERROR) cwebp -q 83 -alpha_q 83 -pass 10 -m 6 -sharp_yuv -quiet "$<" -o "$@" $(HANDLER)
 
 .SECONDEXPANSION:
 %.webp: $$(subst $$(space),\$$(space),%).png
-	$(info WEBP Converter: $@)
-	@cwebp -q 83 -alpha_q 83 -pass 10 -m 6 -sharp_yuv -quiet "$<" -o "$@"
+	$(info WEBP Converter: $(notdir $@))
+	$(ERROR) cwebp -q 83 -alpha_q 83 -pass 10 -m 6 -sharp_yuv -quiet "$<" -o "$@" $(HANDLER)
 
 
 
@@ -321,7 +329,7 @@ all: $(HTML_GZ) $(HTML_BR) $(CSS_BR) $(CSS_GZ) $(JS_BR) $(JS_GZ) $(MISC_BR) $(MI
 #
 .SECONDEXPANSION:
 %.webm: $$(subst $$(space),\$$(space),%).mkv
-	$(info AV1 Encoder: $@)
+	$(info AV1 Encoder: $(notdir $@))
 	@if [[ $$(ffprobe -v error -select_streams v:0 -show_entries stream=codec_name -of default=noprint_wrappers=1:nokey=1 "$<") = "av1" ]] ; then \
 		echo Skipping, already AV1 $<; \
 	else \
@@ -335,7 +343,7 @@ all: $(HTML_GZ) $(HTML_BR) $(CSS_BR) $(CSS_GZ) $(JS_BR) $(JS_GZ) $(MISC_BR) $(MI
 
 .SECONDEXPANSION:
 %.webm: $$(subst $$(space),\$$(space),%).mp4
-	$(info AV1 Encoder: $@)
+	$(info AV1 Encoder: $(notdir $@))
 	@if [[ $$(ffprobe -v error -select_streams v:0 -show_entries stream=codec_name -of default=noprint_wrappers=1:nokey=1 "$<") = "av1" ]] ; then \
 		echo Skipping, already AV1 $<; \
 	else \
@@ -349,7 +357,7 @@ all: $(HTML_GZ) $(HTML_BR) $(CSS_BR) $(CSS_GZ) $(JS_BR) $(JS_GZ) $(MISC_BR) $(MI
 
 .SECONDEXPANSION:
 %.av1.webm: $$(subst $$(space),\$$(space),%).webm
-	$(info AV1 Encoder: $@)
+	$(info AV1 Encoder: $(notdir $@))
 	@if [[ $$(ffprobe -v error -select_streams v:0 -show_entries stream=codec_name -of default=noprint_wrappers=1:nokey=1 "$<") = "av1" ]] ; then \
 		echo Skipping, already AV1 $<; \
 	else \
@@ -367,12 +375,12 @@ all: $(HTML_GZ) $(HTML_BR) $(CSS_BR) $(CSS_GZ) $(JS_BR) $(JS_GZ) $(MISC_BR) $(MI
 #
 .SECONDEXPANSION:
 %.br: $$(subst $$(space),\$$(space),%)
-	$(info MISC Brotli: $@)
+	$(info MISC Brotli: $(notdir $@))
 	@brotli --force --best -n -o "$@" "$<"
 
 .SECONDEXPANSION:
 %.gz: $$(subst $$(space),\$$(space),%)
-	$(info MISC Zopfli: $@)
+	$(info MISC Zopfli: $(notdir $@))
 	@zopfli --i15 "$<" >> "$@"
 
 
@@ -408,9 +416,9 @@ clean-images:
 #
 # Size Listings
 #
-size: SIZE_GZ = $(shell shopt -s globstar && du -cbs $(SITE_PATH)**/*.gz 2>/dev/null | tail -1 | grep -o '[0-9]*')
-size: SIZE_BR = $(shell shopt -s globstar && du -cbs $(SITE_PATH)**/*.br 2>/dev/null | tail -1 | grep -o '[0-9]*')
-size: SIZE_NON_COMP = $(shell shopt -s globstar && du -cbs $(SITE_PATH)** --exclude=*.gz --exclude=*.br | tail -1 | grep -o '[0-9]*')
+size: SIZE_GZ = $(shell shopt -s globstar && cd $(SITE_PATH) && du -cbs **/*.gz 2>/dev/null | tail -1 | grep -o '[0-9]*')
+size: SIZE_BR = $(shell shopt -s globstar && cd $(SITE_PATH) && du -cbs **/*.br 2>/dev/null | tail -1 | grep -o '[0-9]*')
+size: SIZE_NON_COMP = $(shell shopt -s globstar && cd $(SITE_PATH) && du -cbs ** --exclude=*.gz --exclude=*.br | tail -1 | grep -o '[0-9]*')
 size: 
 	$(info Calculating size data...)
 	$(info )
