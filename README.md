@@ -52,3 +52,4 @@ sitecompiler is a Makefile that uses a suite of several minifiers, general purpo
 #### Future work
  - Currently the `dependencies.sh` script mainly relies on `apt-get`, and so only fully work on debian-based systems, but this wouldn't be too difficult to change in the future.
  - A nice feature would be to automatically detect which is the smaller file out of the original, gzip, or brotli files, and delete either one or both of the gzip and brotli files based on that.
+ - Audio encoding into the Opus format would be a nice to have
