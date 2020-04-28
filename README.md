@@ -1,4 +1,5 @@
 # sitecompiler
+![](https://raw.githubusercontent.com/badcf00d/sitecompiler/master/Benchmark.png)
 sitecompiler is a Makefile that uses a suite of several minifiers, general purpose compressors, and image & video optimisers and encoders to compress websites. It supports web content such as `.html` `.css` and `.js`, image file types such as `.png` `.jpg` `.gif` `.svg` and `.webp`, general purpose brotli and zopfli file compressors for producing `.gz` and `.br` files, as well as support for encoding video files into the recently released AV1 video codec. 
 
 #### Quick start
