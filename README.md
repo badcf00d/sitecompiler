@@ -4,7 +4,7 @@ sitecompiler is a Makefile that uses a suite of several minifiers, general purpo
 
 #### Quick start
  - I'll answer a question you probably have first off - sitecompiler does not alter any existing files, it will only create new compressed versions of existing files so that development work can continue to be done on the original files, and then compressed for deployment.  
- - Run `make depend` to update or install any dependencies that might be needed. Currently these mainly rely on `apt-get`, and so only fully work on debian-based systems, but this wouldn't be too difficult to change in the future.
+ - Run `make depend` to update or install any dependencies that might be needed.
  - `make` will run the default recipe which is `webcontent` which processes `.html` `.css` and `.js` files, once sitecompiler is done you will have a `*.gz` and `*.br` version of all the web content files in your website that should be significantly smaller than they were originally. 
    - The first time you run site compiler it will ask for the directory of your website, enter `.` for the current directory.
    - As with all `make` things, run `make -jN` with `N` being the number of jobs to run in parallel for more fastness.
@@ -49,3 +49,6 @@ sitecompiler is a Makefile that uses a suite of several minifiers, general purpo
            background-image: url("image.webp");
        }
        ```
+#### Future work
+ - Currently the `dependencies.sh` script mainly relies on `apt-get`, and so only fully work on debian-based systems, but this wouldn't be too difficult to change in the future.
+ - A nice feature would be to automatically detect which is the smaller file out of the original, gzip, or brotli files, and delete either one or both of the gzip and brotli files based on that.
