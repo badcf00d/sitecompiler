@@ -3,9 +3,8 @@
 sitecompiler is a Makefile that uses a suite of several minifiers, general purpose compressors, and image & video optimisers and encoders to compress websites. It supports web content such as `.html` `.css` and `.js`, image file types such as `.png` `.jpg` `.gif` `.svg` and `.webp`, general purpose brotli and zopfli file compressors for producing `.gz` and `.br` files, as well as support for encoding video files into the recently released AV1 video codec. 
 
 #### Quick start
- - I'll answer a question you probably have first off - sitecompiler does not alter any existing files, it will only create new compressed versions of existing files so that development work can continue to be done on the original files, and then compressed for deployment. 
- 
- - Run `make depend` to update or install any dependencies that might be needed.
+ - I'll answer a question you probably have first off - sitecompiler does not alter any existing files, it will only create new compressed versions of existing files so that development work can continue to be done on the original files, and then compressed for deployment.  
+ - Run `make depend` to update or install any dependencies that might be needed. Currently these mainly rely on `apt-get`, and so only fully work on debian-based systems, but this wouldn't be too difficult to change in the future.
  - `make` will run the default recipe which is `webcontent` which processes `.html` `.css` and `.js` files, once sitecompiler is done you will have a `*.gz` and `*.br` version of all the web content files in your website that should be significantly smaller than they were originally. 
    - The first time you run site compiler it will ask for the directory of your website, enter `.` for the current directory.
    - As with all `make` things, run `make -jN` with `N` being the number of jobs to run in parallel for more fastness.
