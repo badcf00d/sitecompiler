@@ -70,13 +70,11 @@ SVG_BR := $(SVG:%.svg=%.svg.br)
 SVG_MIN := $(SVG:%.svg=%.svg.min)
 
 
-WEBP := $(info Finding WEBP files...) $(shell find $(SITE_PATH) -type f \( -name '*.webp' -o -name '*.jpeg' -o -name '*.jpg' -o -name "*.png" \)  | perl -p -e 's/ /\\ /g' | perl -p -e 's/jpeg\n|jpg\n|png\n/webp\n/g')
-WEBP_GZ := $(WEBP:%.webp=%.webp.gz)
-WEBP_BR := $(WEBP:%.webp=%.webp.br)
-WEBP_MIN := $(WEBP:%.webp=%.webp.min)
-
+WEBP := $(info Finding WEBP files...) $(shell find $(SITE_PATH) -type f \( -name '*.jpeg' -o -name '*.jpg' -o -name "*.png" \)  | perl -p -e 's/ /\\ /g' | perl -p -e 's/jpeg\n|jpg\n|png\n/webp\n/g')
 
 AV1 := $(info Finding AV1 files...) $(shell find $(SITE_PATH) -type f \( -name '*.mkv' -o -name '*.mp4' -o -name '*.webm' \)  | perl -p -e 's/ /\\ /g' | perl -p -e 's/webm\n/av1.webm\n/g' | perl -p -e 's/mkv\n|mp4\n/webm\n/g')
+
+AVIF := $(info Finding AVIF files...) $(shell find $(SITE_PATH) -type f \( -name '*.jpeg' -o -name '*.jpg' -o -name "*.png" \)  | perl -p -e 's/ /\\ /g' | perl -p -e 's/jpeg\n|jpg\n|png\n/avif\n/g')
 
 
 MISC_TYPES := -name '*.txt' \
@@ -97,7 +95,7 @@ MISC_GZ := $(MISC_BR:%.br=%.gz)
 
 
 .INTERMEDIATE: $(HTML_MIN) $(CSS_MIN) $(JS_MIN) $(PNG_MIN) $(JPEG_MIN) $(GIF_MIN) $(SVG_MIN)
-.PHONY: all size depend clean clean-webcontent clean-images misc webcontent html js css images png jpeg gif svg webp av1
+.PHONY: all size depend clean clean-webcontent clean-images misc webcontent html js css images png jpeg gif svg webp av1 avif
 #.SILENT:
 
 
@@ -106,16 +104,17 @@ html: $(HTML_GZ) $(HTML_BR)
 js: $(JS_BR) $(JS_GZ)
 css: $(CSS_BR) $(CSS_GZ)
 
-images: $(PNG_GZ) $(PNG_BR) $(JPEG_GZ) $(JPEG_BR) $(GIF_GZ) $(GIF_BR) $(SVG_GZ) $(SVG_BR) $(WEBP_GZ) $(WEBP_BR) 
+images: $(PNG_GZ) $(PNG_BR) $(JPEG_GZ) $(JPEG_BR) $(GIF_GZ) $(GIF_BR) $(SVG_GZ) $(SVG_BR) $(WEBP) $(AVIF)
 png: $(PNG_GZ) $(PNG_BR)
 jpeg: $(JPEG_GZ) $(JPEG_BR)
 gif: $(GIF_GZ) $(GIF_BR)
 svg: $(SVG_GZ) $(SVG_BR)
-webp: $(WEBP_GZ) $(WEBP_BR) 
+webp: $(WEBP)
+avif: $(AVIF)
 av1: $(AV1)
 
 misc: $(MISC_BR) $(MISC_GZ)
-all: $(HTML_GZ) $(HTML_BR) $(CSS_BR) $(CSS_GZ) $(JS_BR) $(JS_GZ) $(MISC_BR) $(MISC_GZ) $(PNG_GZ) $(PNG_BR) $(JPEG_GZ) $(JPEG_BR) $(GIF_GZ) $(GIF_BR) $(SVG_GZ) $(SVG_BR) $(WEBP_GZ) $(WEBP_BR) $(AV1)
+all: $(HTML_GZ) $(HTML_BR) $(CSS_BR) $(CSS_GZ) $(JS_BR) $(JS_GZ) $(MISC_BR) $(MISC_GZ) $(PNG_GZ) $(PNG_BR) $(JPEG_GZ) $(JPEG_BR) $(GIF_GZ) $(GIF_BR) $(SVG_GZ) $(SVG_BR) $(WEBP) $(AVIF) $(AV1)
 
 
 
@@ -288,39 +287,51 @@ all: $(HTML_GZ) $(HTML_BR) $(CSS_BR) $(CSS_GZ) $(JS_BR) $(JS_GZ) $(MISC_BR) $(MI
 
 
 
+
 #
 # WEBP
 #
 .SECONDEXPANSION:
-%.webp.br: $$(subst $$(space),\$$(space),%).webp $$(subst $$(space),\$$(space),%).webp.min
-	$(info WEBP Brotli: $(notdir $@))
-	@brotli --force --best -n -o "$@" "$<.min"
-
-.SECONDEXPANSION:
-%.webp.gz: $$(subst $$(space),\$$(space),%).webp $$(subst $$(space),\$$(space),%).webp.min
-	$(info WEBP Zopfli: $(notdir $@))
-	@zopfli --i15 "$<.min"
-	@mv -f "$<.min.gz" "$@"
-
-.SECONDEXPANSION:
-%.webp.min: $$(subst $$(space),\$$(space),%).webp
-	$(info WEBP Optimizer: $(notdir $@))
-	$(ERROR) cwebp -q 83 -alpha_q 83 -pass 10 -m 6 -sharp_yuv -quiet "$<" -o "$<.min" $(HANDLER)
-
-.SECONDEXPANSION:
 %.webp: $$(subst $$(space),\$$(space),%).jpg
-	$(info WEBP Converter: $(notdir $@))
+	$(info WEBP Encoder: $(notdir $@))
 	$(ERROR) cwebp -q 83 -alpha_q 83 -pass 10 -m 6 -sharp_yuv -quiet "$<" -o "$@" $(HANDLER)
 
 .SECONDEXPANSION:
 %.webp: $$(subst $$(space),\$$(space),%).jpeg
-	$(info WEBP Converter: $(notdir $@))
+	$(info WEBP Encoder: $(notdir $@))
 	$(ERROR) cwebp -q 83 -alpha_q 83 -pass 10 -m 6 -sharp_yuv -quiet "$<" -o "$@" $(HANDLER)
 
 .SECONDEXPANSION:
 %.webp: $$(subst $$(space),\$$(space),%).png
-	$(info WEBP Converter: $(notdir $@))
+	$(info WEBP Encoder: $(notdir $@))
 	$(ERROR) cwebp -q 83 -alpha_q 83 -pass 10 -m 6 -sharp_yuv -quiet "$<" -o "$@" $(HANDLER)
+
+
+
+
+#
+# AVIF
+#
+.SECONDEXPANSION:
+%.avif: $$(subst $$(space),\$$(space),%).ivf
+	$(info AVIF Muxer: $(notdir $@))
+	$(ERROR) MP4Box -add-image "$<":time=0 -brand avif "$@" $(HANDLER)
+
+.SECONDEXPANSION:
+%.ivf: $$(subst $$(space),\$$(space),%).jpg
+	$(info IVF Encoder: $(notdir $@))
+	$(ERROR) ffmpeg -v quiet -r 1 -i "$<" -g 1 -frames 1 -map 0:0 -c:v libaom-av1 -crf 48 -b:v 0 -cpu-used 4 -row-mt 1 -enable-cdef 1 -enable-global-motion 1 -enable-intrabc 1 -frame-parallel 0 -strict experimental "$@" $(HANDLER)
+
+.SECONDEXPANSION:
+%.ivf: $$(subst $$(space),\$$(space),%).jpeg
+	$(info IVF Encoder: $(notdir $@))
+	$(ERROR) ffmpeg -v quiet -r 1 -i "$<" -g 1 -frames 1 -map 0:0 -c:v libaom-av1 -crf 48 -b:v 0 -cpu-used 4 -row-mt 1 -enable-cdef 1 -enable-global-motion 1 -enable-intrabc 1 -frame-parallel 0 -strict experimental "$@" $(HANDLER)
+
+.SECONDEXPANSION:
+%.ivf: $$(subst $$(space),\$$(space),%).png
+	$(info IVF Encoder: $(notdir $@))
+	$(ERROR) ffmpeg -v quiet -r 1 -i "$<" -g 1 -frames 1 -map 0:0 -c:v libaom-av1 -crf 48 -b:v 0 -cpu-used 4 -row-mt 1 -enable-cdef 1 -enable-global-motion 1 -enable-intrabc 1 -frame-parallel 0 -strict experimental "$@" $(HANDLER)
+
 
 
 
@@ -403,11 +414,11 @@ clean-webcontent:
 
 clean:
 	$(info Cleaning All...)
-	@rm -f $(HTML_GZ) $(HTML_BR) $(HTML_MIN) $(CSS_GZ) $(CSS_BR) $(CSS_MIN) $(JS_GZ) $(JS_BR) $(JS_MIN) $(MISC_BR) $(MISC_GZ) $(PNG_GZ) $(PNG_BR) $(JPEG_GZ) $(JPEG_BR) $(GIF_GZ) $(GIF_BR) $(SVG_GZ) $(SVG_BR) $(PNG_MIN) $(JPEG_MIN) $(GIF_MIN) $(SVG_MIN) $(WEBP_GZ) $(WEBP_BR)  
+	@rm -f $(HTML_GZ) $(HTML_BR) $(HTML_MIN) $(CSS_GZ) $(CSS_BR) $(CSS_MIN) $(JS_GZ) $(JS_BR) $(JS_MIN) $(MISC_BR) $(MISC_GZ) $(PNG_GZ) $(PNG_BR) $(JPEG_GZ) $(JPEG_BR) $(GIF_GZ) $(GIF_BR) $(SVG_GZ) $(SVG_BR) $(PNG_MIN) $(JPEG_MIN) $(GIF_MIN) $(SVG_MIN)
 
 clean-images:
 	$(info Cleaning Images...)
-	@rm -f $(PNG_MIN) $(JPEG_MIN) $(GIF_MIN) $(SVG_MIN) $(PNG_GZ) $(PNG_BR) $(JPEG_GZ) $(JPEG_BR) $(GIF_GZ) $(GIF_BR) $(SVG_GZ) $(SVG_BR) $(WEBP_GZ) $(WEBP_BR) 
+	@rm -f $(PNG_MIN) $(JPEG_MIN) $(GIF_MIN) $(SVG_MIN) $(PNG_GZ) $(PNG_BR) $(JPEG_GZ) $(JPEG_BR) $(GIF_GZ) $(GIF_BR) $(SVG_GZ) $(SVG_BR)
 
 
 

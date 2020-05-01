@@ -62,6 +62,18 @@ fi
 fi
 
 
+if ! which MP4Box > /dev/null; then
+	echo "Installing MP4Box"
+if ! which brew > /dev/null; then
+	echo "Installing linuxbrew (This may take a minute or two)"
+	bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
+	echo 'eval $(/home/linuxbrew/.linuxbrew/bin/brew shellenv)' >> ~/.profile
+	eval $(/home/linuxbrew/.linuxbrew/bin/brew shellenv)
+fi
+	brew install gpac
+fi
+
+
 if ! which terser > /dev/null; then
 	echo "Installing terser"
 if ! which node > /dev/null; then
