@@ -1,6 +1,6 @@
 # sitecompiler
 ![](https://raw.githubusercontent.com/badcf00d/sitecompiler/master/Benchmark.png)
-sitecompiler is a Makefile that uses a suite of several minifiers, general purpose compressors, and image & video optimisers and encoders to compress websites. It supports web content such as `.html` `.css` and `.js`, image file types such as `.png` `.jpg` `.gif` `.svg` and `.webp`, general purpose brotli and zopfli file compressors for producing `.gz` and `.br` files, as well as support for encoding images & videos into the AV1 codec, producing `avif` and `webm` files respectively. 
+sitecompiler is a Makefile that uses a suite of several minifiers, general purpose compressors, and image & video optimisers and encoders to compress websites. It supports web content such as `.html` `.css` and `.js`, image file types such as `.png` `.jpg` `.gif` `.svg` and `.webp`, general purpose brotli and zopfli file compressors for producing `.gz` and `.br` files, as well as support for encoding images & videos into the AV1 codec, producing `.avif` and `.webm` files respectively. 
 
 #### Quick start
  - I'll answer a question you probably have first off - sitecompiler does not alter any existing files, it will only create new compressed versions of existing files so that development work can continue to be done on the original files, and then compressed for deployment.  
