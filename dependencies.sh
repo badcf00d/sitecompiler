@@ -31,7 +31,7 @@ if ! which optipng > /dev/null; then
 fi
 if ! which ffmpeg > /dev/null; then
 	echo "Installing FFmpeg"
-	sudo apt-get install -y ffmpeg ffprobe 1>/dev/null
+	sudo apt-get install -y ffmpeg 1>/dev/null
 fi
 if ! ffmpeg -h 2>&1 | grep -o "enable-libaom" > /dev/null; then
 	read -p "Doesn't look like this version of ffmpeg has libaom enabled, if you want to be able to do AV1 video encoding please try and find one that does, or build your own with the --enable-libaom option (enter to continue)"
