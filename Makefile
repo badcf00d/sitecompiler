@@ -20,8 +20,7 @@ HTML := $(info Finding HTML files...) $(shell find $(SITE_PATH) -type f -name '*
 HTML_BR := $(HTML:%.html=%.html.br) 
 HTML_GZ := $(HTML:%.html=%.html.gz)
 HTML_MIN := $(HTML:%.html=%.html.min)
-HTML_FLAGS := --collapse-whitespace \
-				--collapse-inline-tag-whitespace \
+HTML_FLAGS := --collapse-inline-tag-whitespace \
 				--collapse-boolean-attributes \
 				--remove-comments \
 				--remove-optional-tags \
