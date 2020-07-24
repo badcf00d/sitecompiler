@@ -27,7 +27,6 @@ HTML_FLAGS := --collapse-inline-tag-whitespace \
 				--remove-redundant-attributes \
 				--remove-script-type-attributes \
 				--remove-tag-whitespace \
-				--use-short-doctype \
 				--sort-attributes \
 				--sort-class-name \
 				--minify-css true \
