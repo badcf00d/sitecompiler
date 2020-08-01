@@ -2,9 +2,14 @@ space:=
 space+=
 SHELL:=/bin/bash
 RED=\033[0;31m
+GREEN=\033[0;32m
 NC=\033[0m
 ERROR := @if ! 
 HANDLER = 2>/dev/null; then echo -e "[${RED}ERROR${NC}] $@, copying original file"; cp "$<" "$<.min"; fi
+SIZE_CHECK = @if [[ $$(du -bax "$<" "$@" | sort -k 1 -n | head -n 1 | { read first rest ; echo $$rest ; }) != "$@" ]] ; then \
+		echo -e "[${GREEN}INFO${NC}] $@, larger than the original, deleting"; \
+		rm -f "$@"; \
+	fi
 
 CURRENT_PATH := $(subst $(lastword $(notdir $(MAKEFILE_LIST))),,$(subst $(space),\$(space),$(shell realpath '$(strip $(MAKEFILE_LIST))')))
 SITE_PATH := $(shell cat $(CURRENT_PATH).site.path 2>/dev/null)
@@ -124,12 +129,14 @@ all: $(HTML_GZ) $(HTML_BR) $(CSS_BR) $(CSS_GZ) $(JS_BR) $(JS_GZ) $(MISC_BR) $(MI
 %.html.br: $$(subst $$(space),\$$(space),%).html $$(subst $$(space),\$$(space),%).html.min
 	$(info HTML Brotli: $(notdir $@))
 	@brotli --force --best -n -o "$@" "$<.min"
+	$(SIZE_CHECK)
 
 .SECONDEXPANSION:
 %.html.gz: $$(subst $$(space),\$$(space),%).html $$(subst $$(space),\$$(space),%).html.min
 	$(info HTML Zopfli: $(notdir $@))
 	@zopfli --i15 "$<.min"
 	@mv -f "$<.min.gz" "$@"
+	$(SIZE_CHECK)
 
 .SECONDEXPANSION:
 %.html.min: $$(subst $$(space),\$$(space),%).html
@@ -145,12 +152,14 @@ all: $(HTML_GZ) $(HTML_BR) $(CSS_BR) $(CSS_GZ) $(JS_BR) $(JS_GZ) $(MISC_BR) $(MI
 %.css.br: $$(subst $$(space),\$$(space),%).css $$(subst $$(space),\$$(space),%).css.min
 	$(info CSS Brotli: $(notdir $@))
 	@brotli --force --best -n -o "$@" "$<.min"
+	$(SIZE_CHECK)
 
 .SECONDEXPANSION:
 %.css.gz: $$(subst $$(space),\$$(space),%).css $$(subst $$(space),\$$(space),%).css.min
 	$(info CSS Zopfli: $(notdir $@))
 	@zopfli --i15 "$<.min"
 	@mv -f "$<.min.gz" "$@"
+	$(SIZE_CHECK)
 
 .SECONDEXPANSION:
 %.css.min: $$(subst $$(space),\$$(space),%).css
@@ -166,12 +175,14 @@ all: $(HTML_GZ) $(HTML_BR) $(CSS_BR) $(CSS_GZ) $(JS_BR) $(JS_GZ) $(MISC_BR) $(MI
 %.js.br: $$(subst $$(space),\$$(space),%).js $$(subst $$(space),\$$(space),%).js.min
 	$(info JS Brotli: $(notdir $@))
 	@brotli --force --best -n -o "$@" "$<.min"
+	$(SIZE_CHECK)
 
 .SECONDEXPANSION:
 %.js.gz: $$(subst $$(space),\$$(space),%).js $$(subst $$(space),\$$(space),%).js.min
 	$(info JS Zopfli: $(notdir $@))
 	@zopfli --i15 "$<.min"
 	@mv -f "$<.min.gz" "$@"
+	$(SIZE_CHECK)
 
 .SECONDEXPANSION:
 %.js.min: $$(subst $$(space),\$$(space),%).js
@@ -188,12 +199,14 @@ all: $(HTML_GZ) $(HTML_BR) $(CSS_BR) $(CSS_GZ) $(JS_BR) $(JS_GZ) $(MISC_BR) $(MI
 %.png.br: $$(subst $$(space),\$$(space),%).png $$(subst $$(space),\$$(space),%).png.min
 	$(info PNG Brotli: $(notdir $@))
 	@brotli --force --best -n -o "$@" "$<.min"
+	$(SIZE_CHECK)
 
 .SECONDEXPANSION:
 %.png.gz: $$(subst $$(space),\$$(space),%).png $$(subst $$(space),\$$(space),%).png.min
 	$(info PNG Zopfli: $(notdir $@))
 	@zopfli --i15 "$<.min"
 	@mv -f "$<.min.gz" "$@"
+	$(SIZE_CHECK)
 
 .SECONDEXPANSION:
 %.png.min: $$(subst $$(space),\$$(space),%).png
@@ -209,23 +222,27 @@ all: $(HTML_GZ) $(HTML_BR) $(CSS_BR) $(CSS_GZ) $(JS_BR) $(JS_GZ) $(MISC_BR) $(MI
 %.jpeg.br: $$(subst $$(space),\$$(space),%).jpeg $$(subst $$(space),\$$(space),%).jpeg.min
 	$(info JPEG Brotli: $(notdir $@))
 	@brotli --force --best -n -o "$@" "$<.min"
+	$(SIZE_CHECK)
 
 .SECONDEXPANSION:
 %.jpg.br: $$(subst $$(space),\$$(space),%).jpg $$(subst $$(space),\$$(space),%).jpg.min
 	$(info JPEG Brotli: $(notdir $@))
 	@brotli --force --best -n -o "$@" "$<.min"
+	$(SIZE_CHECK)
 
 .SECONDEXPANSION:
 %.jpeg.gz: $$(subst $$(space),\$$(space),%).jpeg $$(subst $$(space),\$$(space),%).jpeg.min
 	$(info JPEG Zopfli: $(notdir $@))
 	@zopfli --i15 "$<.min"
 	@mv -f "$<.min.gz" "$@"
+	$(SIZE_CHECK)
 
 .SECONDEXPANSION:
 %.jpg.gz: $$(subst $$(space),\$$(space),%).jpg $$(subst $$(space),\$$(space),%).jpg.min
 	$(info JPEG Zopfli: $(notdir $@))
 	@zopfli --i15 "$<.min"
 	@mv -f "$<.min.gz" "$@"
+	$(SIZE_CHECK)
 
 .SECONDEXPANSION:
 %.jpeg.min: $$(subst $$(space),\$$(space),%).jpeg
@@ -249,12 +266,14 @@ all: $(HTML_GZ) $(HTML_BR) $(CSS_BR) $(CSS_GZ) $(JS_BR) $(JS_GZ) $(MISC_BR) $(MI
 %.gif.br: $$(subst $$(space),\$$(space),%).gif $$(subst $$(space),\$$(space),%).gif.min
 	$(info GIF Brotli: $(notdir $@))
 	@brotli --force --best -n -o "$@" "$<.min"
+	$(SIZE_CHECK)
 
 .SECONDEXPANSION:
 %.gif.gz: $$(subst $$(space),\$$(space),%).gif $$(subst $$(space),\$$(space),%).gif.min
 	$(info GIF Zopfli: $(notdir $@))
 	@zopfli --i15 "$<.min"
 	@mv -f "$<.min.gz" "$@"
+	$(SIZE_CHECK)
 
 .SECONDEXPANSION:
 %.gif.min: $$(subst $$(space),\$$(space),%).gif
@@ -271,12 +290,14 @@ all: $(HTML_GZ) $(HTML_BR) $(CSS_BR) $(CSS_GZ) $(JS_BR) $(JS_GZ) $(MISC_BR) $(MI
 %.svg.br: $$(subst $$(space),\$$(space),%).svg $$(subst $$(space),\$$(space),%).svg.min
 	$(info SVG Brotli: $(notdir $@))
 	@brotli --force --best -n -o "$@" "$<.min"
+	$(SIZE_CHECK)
 
 .SECONDEXPANSION:
 %.svg.gz: $$(subst $$(space),\$$(space),%).svg $$(subst $$(space),\$$(space),%).svg.min
 	$(info SVG Zopfli: $(notdir $@))
 	@zopfli --i15 "$<.min"
 	@mv -f "$<.min.gz" "$@"
+	$(SIZE_CHECK)
 
 .SECONDEXPANSION:
 %.svg.min: $$(subst $$(space),\$$(space),%).svg
@@ -387,11 +408,13 @@ all: $(HTML_GZ) $(HTML_BR) $(CSS_BR) $(CSS_GZ) $(JS_BR) $(JS_GZ) $(MISC_BR) $(MI
 %.br: $$(subst $$(space),\$$(space),%)
 	$(info MISC Brotli: $(notdir $@))
 	@brotli --force --best -n -o "$@" "$<"
+	$(SIZE_CHECK)
 
 .SECONDEXPANSION:
 %.gz: $$(subst $$(space),\$$(space),%)
 	$(info MISC Zopfli: $(notdir $@))
 	@zopfli --i15 "$<" >> "$@"
+	$(SIZE_CHECK)
 
 
 

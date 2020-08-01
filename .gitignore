@@ -1,1 +1,4 @@
 .site.path
+*.br
+*.gz
+*.webp
