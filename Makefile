@@ -93,7 +93,7 @@ MISC_GZ := $(MISC_BR:%.br=%.gz)
 
 
 .INTERMEDIATE: $(HTML_MIN) $(CSS_MIN) $(JS_MIN) $(PNG_MIN) $(JPEG_MIN) $(GIF_MIN) $(SVG_MIN)
-.PHONY: all size depend clean clean-webcontent clean-images misc webcontent html js css images png jpeg gif svg webp av1 avif
+.PHONY: all size depend clean clean-webcontent clean-images misc webcontent html experimental js css images png jpeg gif svg webp av1 avif
 #.SILENT:
 
 
