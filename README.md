@@ -16,7 +16,6 @@ sitecompiler is a Makefile that uses a suite of several minifiers, general purpo
  - `make all` processes all the file types implemented in sitecompiler, those being all the web content files, image & video files, and miscellaneous files.
  - `make images` processes image file types `.png`, `.jpeg`, `.jpg`, `.gif`, `.svg`, `.webp`, to do these file types individually run make with the corresponding file type such as `make png`.
  - `make misc` processes miscellaneous file types: `.txt`, `.xml`, `.csv`, `.json`, `.bmp`, `.otf`, `.ttf`, and `.webmanifest`.
- - `make av1` processes video files contained in `.mkv` `.mp4` `.webm` into the AV1 video codec.
  - `make clean` deletes all of the `.gz`, `.br`, and `.min` files that sitecompiler produces when processing all file types.
  - `make clean-webcontent` deletes all of the `.gz`, `.br`, and `.min` files that sitecompiler produces when processing the web content file types.
  - `make clean-images` deletes all of the `.gz`, `.br`, and `.min` files that sitecompiler produces when processing all image file types.

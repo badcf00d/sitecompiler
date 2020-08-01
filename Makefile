@@ -102,7 +102,7 @@ html: $(HTML_GZ) $(HTML_BR)
 js: $(JS_BR) $(JS_GZ)
 css: $(CSS_BR) $(CSS_GZ)
 
-images: $(PNG_GZ) $(PNG_BR) $(JPEG_GZ) $(JPEG_BR) $(GIF_GZ) $(GIF_BR) $(SVG_GZ) $(SVG_BR) $(WEBP) $(AVIF)
+images: $(PNG_GZ) $(PNG_BR) $(JPEG_GZ) $(JPEG_BR) $(GIF_GZ) $(GIF_BR) $(SVG_GZ) $(SVG_BR) $(WEBP)
 png: $(PNG_GZ) $(PNG_BR)
 jpeg: $(JPEG_GZ) $(JPEG_BR)
 gif: $(GIF_GZ) $(GIF_BR)
@@ -112,7 +112,8 @@ avif: $(AVIF)
 av1: $(AV1)
 
 misc: $(MISC_BR) $(MISC_GZ)
-all: $(HTML_GZ) $(HTML_BR) $(CSS_BR) $(CSS_GZ) $(JS_BR) $(JS_GZ) $(MISC_BR) $(MISC_GZ) $(PNG_GZ) $(PNG_BR) $(JPEG_GZ) $(JPEG_BR) $(GIF_GZ) $(GIF_BR) $(SVG_GZ) $(SVG_BR) $(WEBP) $(AVIF) $(AV1)
+experimental: $(AVIF) $(AV1)
+all: $(HTML_GZ) $(HTML_BR) $(CSS_BR) $(CSS_GZ) $(JS_BR) $(JS_GZ) $(MISC_BR) $(MISC_GZ) $(PNG_GZ) $(PNG_BR) $(JPEG_GZ) $(JPEG_BR) $(GIF_GZ) $(GIF_BR) $(SVG_GZ) $(SVG_BR) $(WEBP)
 
 
 
@@ -412,11 +413,11 @@ clean-webcontent:
 
 clean:
 	$(info Cleaning All...)
-	@rm -f $(HTML_GZ) $(HTML_BR) $(HTML_MIN) $(CSS_GZ) $(CSS_BR) $(CSS_MIN) $(JS_GZ) $(JS_BR) $(JS_MIN) $(MISC_BR) $(MISC_GZ) $(PNG_GZ) $(PNG_BR) $(JPEG_GZ) $(JPEG_BR) $(GIF_GZ) $(GIF_BR) $(SVG_GZ) $(SVG_BR) $(PNG_MIN) $(JPEG_MIN) $(GIF_MIN) $(SVG_MIN)
+	@rm -f $(HTML_GZ) $(HTML_BR) $(HTML_MIN) $(CSS_GZ) $(CSS_BR) $(CSS_MIN) $(JS_GZ) $(JS_BR) $(JS_MIN) $(MISC_BR) $(MISC_GZ) $(PNG_GZ) $(PNG_BR) $(JPEG_GZ) $(JPEG_BR) $(GIF_GZ) $(GIF_BR) $(SVG_GZ) $(SVG_BR) $(PNG_MIN) $(JPEG_MIN) $(GIF_MIN) $(SVG_MIN) $(WEBP) $(AVIF) $(AV1)
 
 clean-images:
 	$(info Cleaning Images...)
-	@rm -f $(PNG_MIN) $(JPEG_MIN) $(GIF_MIN) $(SVG_MIN) $(PNG_GZ) $(PNG_BR) $(JPEG_GZ) $(JPEG_BR) $(GIF_GZ) $(GIF_BR) $(SVG_GZ) $(SVG_BR)
+	@rm -f $(PNG_MIN) $(JPEG_MIN) $(GIF_MIN) $(SVG_MIN) $(PNG_GZ) $(PNG_BR) $(JPEG_GZ) $(JPEG_BR) $(GIF_GZ) $(GIF_BR) $(SVG_GZ) $(SVG_BR) $(WEBP) $(AVIF)
 
 
 
