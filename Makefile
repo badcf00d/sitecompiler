@@ -6,7 +6,7 @@ GREEN=\033[0;32m
 NC=\033[0m
 ERROR := @if ! 
 HANDLER = 2>/dev/null; then echo -e "[${RED}ERROR${NC}] $@, copying original file"; cp "$<" "$<.min"; fi
-SIZE_CHECK = @if [[ $$(du -bax "$<" "$@" | sort -k 1 -n | head -n 1 | { read first rest ; echo $$rest ; }) != "$@" ]] ; then \
+SIZE_CHECK = @if [[ $$(wc -c "$<" "$@" | sort -k 1 -n | head -n 1 | { read first rest ; echo $$rest ; }) != "$@" ]] ; then \
 		echo -e "[${GREEN}INFO${NC}] $@, larger than the original, deleting"; \
 		rm -f "$@"; \
 	fi
