@@ -4,6 +4,9 @@ SHELL:=/bin/bash
 RED=\033[0;31m
 GREEN=\033[0;32m
 NC=\033[0m
+
+
+PREPROCESS := $(info $(shell ./preprocess.sh))
 ERROR := @if ! 
 HANDLER = 2>/dev/null; then echo -e "[${RED}ERROR${NC}] $@, copying original file"; cp "$<" "$<.min"; fi
 SIZE_CHECK = @if [[ $$(wc -c "$<" "$@" | sort -k 1 -n | head -n 1 | { read first rest ; echo $$rest ; }) != "$@" ]] ; then \
@@ -20,6 +23,8 @@ ifeq ($(strip $(SITE_PATH)),)
     SITE_PATH := $(shell realpath $(userInput))
     $(shell echo $(SITE_PATH) >> $(CURRENT_PATH).site.path)
 endif
+
+
 
 HTML := $(info Finding HTML files...) $(shell find $(SITE_PATH) -type f -name '*.html' | perl -p -e 's/ /\\ /g')
 HTML_BR := $(HTML:%.html=%.html.br) 
@@ -142,7 +147,6 @@ all: $(HTML_GZ) $(HTML_BR) $(CSS_BR) $(CSS_GZ) $(JS_BR) $(JS_GZ) $(MISC_BR) $(MI
 %.html.min: $$(subst $$(space),\$$(space),%).html
 	$(info HTML Minifier: $(notdir $@))
 	$(ERROR) html-minifier-terser $(HTML_FLAGS) "$<" -o "$<.min" $(HANDLER)
-
 
 
 #
