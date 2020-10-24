@@ -6,7 +6,6 @@ GREEN=\033[0;32m
 NC=\033[0m
 
 
-PREPROCESS := $(info $(shell ./preprocess.sh))
 ERROR := @if ! 
 HANDLER = 2>/dev/null; then echo -e "[${RED}ERROR${NC}] $@, copying original file"; cp "$<" "$<.min"; fi
 SIZE_CHECK = @if [[ $$(wc -c "$<" "$@" | sort -k 1 -n | head -n 1 | { read first rest ; echo $$rest ; }) != "$@" ]] ; then \
@@ -24,6 +23,7 @@ ifeq ($(strip $(SITE_PATH)),)
     $(shell echo $(SITE_PATH) >> $(CURRENT_PATH).site.path)
 endif
 
+PREPROCESS := $(info $(shell ./preprocess.sh $(SITE_PATH)))
 
 
 HTML := $(info Finding HTML files...) $(shell find $(SITE_PATH) -type f -name '*.html' | perl -p -e 's/ /\\ /g')
@@ -61,7 +61,7 @@ PNG_BR := $(PNG:%.png=%.png.br)
 PNG_MIN := $(PNG:%.png=%.png.min)
 
 
-JPEG_GZ := $(info Finding JPEG files...) $(shell find $(SITE_PATH) -type f  \( -name '*.jpeg' -o -name '*.jpg' \)  | perl -p -e 's/ /\\ /g' | perl -p -e 's/\n/.gz\n/')
+JPEG_GZ := $(info Finding JPEG files...) $(shell find $(SITE_PATH) -type f  \( -name '*.jpeg' -o -name '*.jpg' \)  | perl -p -e 's/ /\\ /g; s/\n/.gz\n/')
 JPEG_BR := $(JPEG_GZ:%.gz=%.br)
 JPEG_MIN := $(JPEG_GZ:%.gz=%.min)
 
@@ -78,11 +78,11 @@ SVG_BR := $(SVG:%.svg=%.svg.br)
 SVG_MIN := $(SVG:%.svg=%.svg.min)
 
 
-WEBP := $(info Finding WEBP files...) $(shell find $(SITE_PATH) -type f \( -name '*.jpeg' -o -name '*.jpg' -o -name "*.png" \)  | perl -p -e 's/ /\\ /g' | perl -p -e 's/jpeg\n|jpg\n|png\n/webp\n/g')
+WEBP := $(info Finding WEBP files...) $(shell find $(SITE_PATH) -type f \( -name '*.jpeg' -o -name '*.jpg' -o -name "*.png" \)  | perl -p -e 's/ /\\ /g; s/jpeg\n|jpg\n|png\n/webp\n/g')
 
-AV1 := $(info Finding AV1 files...) $(shell find $(SITE_PATH) -type f \( -name '*.mkv' -o -name '*.mp4' -o -name '*.webm' \)  | perl -p -e 's/ /\\ /g' | perl -p -e 's/webm\n/av1.webm\n/g' | perl -p -e 's/mkv\n|mp4\n/webm\n/g')
+AV1 := $(info Finding AV1 files...) $(shell find $(SITE_PATH) -type f \( -name '*.mkv' -o -name '*.mp4' -o -name '*.webm' \)  | perl -p -e 's/ /\\ /g; s/webm\n/av1.webm\n/g; s/mkv\n|mp4\n/webm\n/g')
 
-AVIF := $(info Finding AVIF files...) $(shell find $(SITE_PATH) -type f \( -name '*.jpeg' -o -name '*.jpg' -o -name "*.png" \)  | perl -p -e 's/ /\\ /g' | perl -p -e 's/jpeg\n|jpg\n|png\n/avif\n/g')
+AVIF := $(info Finding AVIF files...) $(shell find $(SITE_PATH) -type f \( -name '*.jpeg' -o -name '*.jpg' -o -name "*.png" \)  | perl -p -e 's/ /\\ /g; s/jpeg\n|jpg\n|png\n/avif\n/g')
 
 
 MISC_TYPES := -name '*.txt' \
@@ -94,7 +94,7 @@ MISC_TYPES := -name '*.txt' \
                 -o -name '*.ttf' \
                 -o -name '*.webmanifest'
 
-MISC_BR := $(info Finding miscellaneous files...) $(shell find $(SITE_PATH) -type f \( $(MISC_TYPES) \) | perl -p -e 's/ /\\ /g' | perl -p -e 's/\n/.br\n/')
+MISC_BR := $(info Finding miscellaneous files...) $(shell find $(SITE_PATH) -type f \( $(MISC_TYPES) \) | perl -p -e 's/ /\\ /g; s/\n/.br\n/')
 MISC_GZ := $(MISC_BR:%.br=%.gz)
 
 
