@@ -344,17 +344,17 @@ all: $(HTML_GZ) $(HTML_BR) $(CSS_BR) $(CSS_GZ) $(JS_BR) $(JS_GZ) $(MISC_BR) $(MI
 .SECONDEXPANSION:
 %.ivf: $$(subst $$(space),\$$(space),%).jpg
 	$(info IVF Encoder: $(notdir $@))
-	$(ERROR) ffmpeg -v quiet -r 1 -i "$<" -g 1 -frames 1 -map 0:0 -c:v libaom-av1 -crf 48 -b:v 0 -cpu-used 4 -row-mt 1 -enable-cdef 1 -enable-global-motion 1 -enable-intrabc 1 -frame-parallel 0 -strict experimental "$@" $(HANDLER)
+	$(ERROR) ffmpeg -v quiet -r 1 -i "$<" -g 1 -frames 1 -map 0:0 -c:v libaom-av1 -crf 45 -b:v 0 -cpu-used 4 -row-mt 1 -enable-cdef 1 -enable-global-motion 1 -enable-intrabc 1 -frame-parallel 0 -strict experimental "$@" $(HANDLER)
 
 .SECONDEXPANSION:
 %.ivf: $$(subst $$(space),\$$(space),%).jpeg
 	$(info IVF Encoder: $(notdir $@))
-	$(ERROR) ffmpeg -v quiet -r 1 -i "$<" -g 1 -frames 1 -map 0:0 -c:v libaom-av1 -crf 48 -b:v 0 -cpu-used 4 -row-mt 1 -enable-cdef 1 -enable-global-motion 1 -enable-intrabc 1 -frame-parallel 0 -strict experimental "$@" $(HANDLER)
+	$(ERROR) ffmpeg -v quiet -r 1 -i "$<" -g 1 -frames 1 -map 0:0 -c:v libaom-av1 -crf 45 -b:v 0 -cpu-used 4 -row-mt 1 -enable-cdef 1 -enable-global-motion 1 -enable-intrabc 1 -frame-parallel 0 -strict experimental "$@" $(HANDLER)
 
 .SECONDEXPANSION:
 %.ivf: $$(subst $$(space),\$$(space),%).png
 	$(info IVF Encoder: $(notdir $@))
-	$(ERROR) ffmpeg -v quiet -r 1 -i "$<" -g 1 -frames 1 -map 0:0 -c:v libaom-av1 -crf 48 -b:v 0 -cpu-used 4 -row-mt 1 -enable-cdef 1 -enable-global-motion 1 -enable-intrabc 1 -frame-parallel 0 -strict experimental "$@" $(HANDLER)
+	$(ERROR) ffmpeg -v quiet -r 1 -i "$<" -g 1 -frames 1 -map 0:0 -c:v libaom-av1 -crf 45 -b:v 0 -cpu-used 4 -row-mt 1 -enable-cdef 1 -enable-global-motion 1 -enable-intrabc 1 -frame-parallel 0 -strict experimental "$@" $(HANDLER)
 
 
 
