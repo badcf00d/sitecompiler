@@ -14,7 +14,9 @@ else
 fi
 
 
-if [[ $(id -u) -ne 0 ]] ; then echo ; echo "### Not running as root at the moment, you may be asked to enter your password when installing packages"; fi
+if [[ $(id -u) -ne 0 ]] ; then 
+	echo -e "\n### Not running as root at the moment, you may be asked to enter your password when installing packages\n"
+fi
 echo Updating package repositories
 $OS_PACKAGE_MANAGER update
 
@@ -42,6 +44,10 @@ if ! which optipng > /dev/null; then
 	echo "Installing Optipng"
 	$OS_PACKAGE_MANAGER install $OS_PACKAGE_MANAGER_FLAGS optipng 1>/dev/null
 fi
+if ! which MP4Box > /dev/null; then
+	echo "Installing MP4Box"
+	$OS_PACKAGE_MANAGER install $OS_PACKAGE_MANAGER_FLAGS gpac 1>/dev/null
+fi
 if ! which ffmpeg > /dev/null; then
 	echo "Installing FFmpeg"
 	$OS_PACKAGE_MANAGER install $OS_PACKAGE_MANAGER_FLAGS ffmpeg 1>/dev/null
@@ -52,43 +58,36 @@ fi
 
 
 if ! which svgcleaner > /dev/null; then
-	echo "Installing svgcleaner"
-if ! which brew > /dev/null; then
-	echo "Installing linuxbrew (This may take a minute or two)"
-	bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
-	echo 'eval $(/home/linuxbrew/.linuxbrew/bin/brew shellenv)' >> ~/.profile
-	eval $(/home/linuxbrew/.linuxbrew/bin/brew shellenv)
+if ! which cargo > /dev/null; then
+	echo "Installing cargo"
+	$OS_PACKAGE_MANAGER install $OS_PACKAGE_MANAGER_FLAGS cargo
 fi
-	brew install svgcleaner
+	echo "Installing svgcleaner"
+	cargo install svgcleaner
+
+	if ! echo $PATH | grep -o ".cargo/bin" > /dev/null; then
+		echo -e "export PATH=\"\$HOME/.cargo/bin:\$PATH\"" | tee -a ~/.bashrc
+		source ~/.profile
+	fi
 fi
 
 
 if ! which cwebp > /dev/null; then
 	echo "Installing cwebp"
-if ! which brew > /dev/null; then
-	echo "Installing linuxbrew (This may take a minute or two)"
-	bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
-	echo 'eval $(/home/linuxbrew/.linuxbrew/bin/brew shellenv)' >> ~/.profile
-	eval $(/home/linuxbrew/.linuxbrew/bin/brew shellenv)
-fi
-	brew install webp
-fi
-
-
-if ! which MP4Box > /dev/null; then
-	echo "Installing MP4Box"
-if ! which brew > /dev/null; then
-	echo "Installing linuxbrew (This may take a minute or two)"
-	bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
-	echo 'eval $(/home/linuxbrew/.linuxbrew/bin/brew shellenv)' >> ~/.profile
-	eval $(/home/linuxbrew/.linuxbrew/bin/brew shellenv)
-fi
-	brew install gpac
+	$OS_PACKAGE_MANAGER install $OS_PACKAGE_MANAGER_FLAGS libjpeg-dev libpng-dev libtiff-dev libgif-dev 1>/dev/null
+	
+	wget -q https://storage.googleapis.com/downloads.webmproject.org/releases/webp/libwebp-1.1.0.tar.gz
+	tar xzf libwebp-1.1.0.tar.gz
+	cd libwebp-1.1.0
+	./configure -q --enable-shared=false
+	make -j$(grep -c ^processor /proc/cpuinfo) > /dev/null 2>&1
+	sudo make install > /dev/null 2>&1
+	cd ..
+	rm -r libwebp-1.1.0*
 fi
 
 
 if ! which terser > /dev/null; then
-	echo "Installing terser"
 if ! which node > /dev/null; then
 	echo "Installing node (This may take a minute or two)"
 	curl -sL https://deb.nodesource.com/setup_13.x | sudo -E bash - 1>/dev/null
@@ -98,12 +97,12 @@ if ! which npm > /dev/null; then
 	echo "Installing npm (This may take a minute or two)"
 	curl -L https://npmjs.org/install.sh | sudo sh 1>/dev/null
 fi
+	echo "Installing terser"
 	sudo npm install terser -g 1>/dev/null
 fi
 
 
 if ! which cleancss > /dev/null; then
-	echo "Installing cleancss"
 if ! which node > /dev/null; then
 	echo "Installing node (This may take a minute or two)"
 	curl -sL https://deb.nodesource.com/setup_13.x | sudo -E bash - 1>/dev/null
@@ -113,12 +112,12 @@ if ! which npm > /dev/null; then
 	echo "Installing npm (This may take a minute or two)"
 	curl -L https://npmjs.org/install.sh | sudo sh 1>/dev/null
 fi
+	echo "Installing cleancss"
 	sudo npm install clean-css-cli -g 1>/dev/null
 fi
 
 
 if ! which html-minifier-terser > /dev/null; then
-	echo "Installing html-minifier"
 if ! which node > /dev/null; then
 	echo "Installing node (This may take a minute or two)"
 	curl -sL https://deb.nodesource.com/setup_13.x | sudo -E bash - 1>/dev/null
@@ -128,6 +127,7 @@ if ! which npm > /dev/null; then
 	echo "Installing npm (This may take a minute or two)"
 	curl -L https://npmjs.org/install.sh | sudo sh 1>/dev/null
 fi
+	echo "Installing html-minifier"
 	sudo npm install html-minifier-terser -g 1>/dev/null
 fi
 
