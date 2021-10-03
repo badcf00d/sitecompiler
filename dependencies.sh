@@ -1,9 +1,6 @@
 #!/bin/bash
 # set -x
 
-LESS_PIPE="BEGIN { ORS=\"\\r\"; print \"Starting...\" } { print \"\033[2K\"; print \$0 } END { print \"\033[2K\"; print \"Done\\n\" }"
-
-
 
 if [[ "$OSTYPE" == "linux-gnu"* ]]; then
     OS_PACKAGE_MANAGER="sudo apt-get"
@@ -20,36 +17,36 @@ if [[ $(id -u) -ne 0 ]] ; then
 	echo -e "\n### Not running as root at the moment, you may be asked to enter your password when installing packages\n"
 fi
 echo Updating package repositories
-$OS_PACKAGE_MANAGER update | awk "$LESS_PIPE"
+$OS_PACKAGE_MANAGER update
 
 
 if ! which realpath > /dev/null; then
 	echo "Installing Realpath"
-	$OS_PACKAGE_MANAGER install $OS_PACKAGE_MANAGER_FLAGS coreutils | awk "$LESS_PIPE"
+	$OS_PACKAGE_MANAGER install $OS_PACKAGE_MANAGER_FLAGS coreutils
 fi
 if ! which zopfli > /dev/null; then
 	echo "Installing Zopfli"
-	$OS_PACKAGE_MANAGER install $OS_PACKAGE_MANAGER_FLAGS zopfli | awk "$LESS_PIPE"
+	$OS_PACKAGE_MANAGER install $OS_PACKAGE_MANAGER_FLAGS zopfli
 fi
 if ! which brotli > /dev/null; then
 	echo "Installing Brotli"
-	$OS_PACKAGE_MANAGER install $OS_PACKAGE_MANAGER_FLAGS brotli | awk "$LESS_PIPE"
+	$OS_PACKAGE_MANAGER install $OS_PACKAGE_MANAGER_FLAGS brotli
 fi
 if ! which gifsicle > /dev/null; then
 	echo "Installing Gifsicle"
-	$OS_PACKAGE_MANAGER install $OS_PACKAGE_MANAGER_FLAGS gifsicle | awk "$LESS_PIPE"
+	$OS_PACKAGE_MANAGER install $OS_PACKAGE_MANAGER_FLAGS gifsicle
 fi
 if ! which jpegoptim > /dev/null; then
 	echo "Installing Jpegoptim"
-	$OS_PACKAGE_MANAGER install $OS_PACKAGE_MANAGER_FLAGS jpegoptim | awk "$LESS_PIPE"
+	$OS_PACKAGE_MANAGER install $OS_PACKAGE_MANAGER_FLAGS jpegoptim
 fi
 if ! which optipng > /dev/null; then
 	echo "Installing Optipng"
-	$OS_PACKAGE_MANAGER install $OS_PACKAGE_MANAGER_FLAGS optipng | awk "$LESS_PIPE"
+	$OS_PACKAGE_MANAGER install $OS_PACKAGE_MANAGER_FLAGS optipng
 fi
 if ! which MP4Box > /dev/null; then
 	echo "Installing MP4Box"
-	$OS_PACKAGE_MANAGER install $OS_PACKAGE_MANAGER_FLAGS gpac | awk "$LESS_PIPE"
+	$OS_PACKAGE_MANAGER install $OS_PACKAGE_MANAGER_FLAGS gpac
 fi
 if ! which ffmpeg > /dev/null; then
 	echo "Installing FFmpeg"
@@ -82,45 +79,45 @@ fi
 if ! which terser > /dev/null; then
 if ! which node > /dev/null; then
 	echo "Installing node (This may take a minute or two)"
-	curl -sL https://deb.nodesource.com/setup_13.x | sudo -E bash - | awk "$LESS_PIPE"
-	$OS_PACKAGE_MANAGER install $OS_PACKAGE_MANAGER_FLAGS nodejs | awk "$LESS_PIPE"
+	curl -sL https://deb.nodesource.com/setup_13.x | sudo -E bash -
+	$OS_PACKAGE_MANAGER install $OS_PACKAGE_MANAGER_FLAGS nodejs
 fi
 if ! which npm > /dev/null; then
 	echo "Installing npm (This may take a minute or two)"
-	curl -L https://npmjs.org/install.sh | sudo sh | awk "$LESS_PIPE"
+	curl -L https://npmjs.org/install.sh | sudo sh
 fi
 	echo "Installing terser"
-	sudo npm install terser -g | awk "$LESS_PIPE"
+	sudo npm install terser -g
 fi
 
 
 if ! which cleancss > /dev/null; then
 if ! which node > /dev/null; then
 	echo "Installing node (This may take a minute or two)"
-	curl -sL https://deb.nodesource.com/setup_13.x | sudo -E bash - | awk "$LESS_PIPE"
-	$OS_PACKAGE_MANAGER install $OS_PACKAGE_MANAGER_FLAGS nodejs | awk "$LESS_PIPE"
+	curl -sL https://deb.nodesource.com/setup_13.x | sudo -E bash -
+	$OS_PACKAGE_MANAGER install $OS_PACKAGE_MANAGER_FLAGS nodejs
 fi
 if ! which npm > /dev/null; then
 	echo "Installing npm (This may take a minute or two)"
-	curl -L https://npmjs.org/install.sh | sudo sh | awk "$LESS_PIPE"
+	curl -L https://npmjs.org/install.sh | sudo sh
 fi
 	echo "Installing cleancss"
-	sudo npm install clean-css-cli -g | awk "$LESS_PIPE"
+	sudo npm install clean-css-cli -g
 fi
 
 
 if ! which html-minifier-terser > /dev/null; then
 if ! which node > /dev/null; then
 	echo "Installing node (This may take a minute or two)"
-	curl -sL https://deb.nodesource.com/setup_13.x | sudo -E bash - | awk "$LESS_PIPE"
-	$OS_PACKAGE_MANAGER install $OS_PACKAGE_MANAGER_FLAGS nodejs | awk "$LESS_PIPE"
+	curl -sL https://deb.nodesource.com/setup_13.x | sudo -E bash -
+	$OS_PACKAGE_MANAGER install $OS_PACKAGE_MANAGER_FLAGS nodejs
 fi
 if ! which npm > /dev/null; then
 	echo "Installing npm (This may take a minute or two)"
-	curl -L https://npmjs.org/install.sh | sudo sh | awk "$LESS_PIPE"
+	curl -L https://npmjs.org/install.sh | sudo sh
 fi
 	echo "Installing html-minifier"
-	sudo npm install html-minifier-terser -g | awk "$LESS_PIPE"
+	sudo npm install html-minifier-terser -g
 fi
 
 echo "Dependencies up-to-date"
