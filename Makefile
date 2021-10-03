@@ -7,7 +7,7 @@ NC=\033[0m
 
 
 ERROR := @if ! 
-HANDLER = 2>/dev/null; then echo -e "[${RED}ERROR${NC}] $@, copying original file"; cp "$<" "$<.min"; fi
+HANDLER = ; then echo -e "[${RED}ERROR${NC}] $@, copying original file"; cp "$<" "$<.min"; fi
 SIZE_CHECK = @if [[ $$(wc -c "$<" "$@" | sort -k 1 -n | head -n 1 | { read first rest ; echo $$rest ; }) != "$@" ]] ; then \
 		echo -e "[${GREEN}INFO${NC}] $@, larger than the original, deleting"; \
 		rm -f "$@"; \
@@ -282,7 +282,7 @@ all: $(HTML_GZ) $(HTML_BR) $(CSS_BR) $(CSS_GZ) $(JS_BR) $(JS_GZ) $(MISC_BR) $(MI
 .SECONDEXPANSION:
 %.gif.min: $$(subst $$(space),\$$(space),%).gif
 	$(info GIF Optimizer: $(notdir $@))
-	$(ERROR) gifsicle -o "$<.min" -O3 --careful --no-comments --no-names --same-delay --same-loopcount --no-warnings -- "$<" $(HANDLER)
+	$(ERROR) gifsicle -o "$<.min" -O3 --color-method=blend-diversity --lossy=20 --careful --no-comments --no-names --same-delay --same-loopcount --no-warnings -- "$<" $(HANDLER)
 
 
 
