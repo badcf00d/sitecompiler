@@ -61,7 +61,7 @@ if [ -d vmaf ]; then
 else
     git clone https://github.com/Netflix/vmaf.git
 fi
-sudo pip3 install meson Cython numpy
+DISPLAY= && sudo pip3 install meson Cython numpy
 cd vmaf/libvmaf
 meson setup --buildtype release --libdir lib build
 ninja -vC build
