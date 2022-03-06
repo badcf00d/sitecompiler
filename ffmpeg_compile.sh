@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 OS_PACKAGE_MANAGER=$1
 OS_PACKAGE_MANAGER_FLAGS=$2
 
@@ -41,32 +43,55 @@ $OS_PACKAGE_MANAGER install $OS_PACKAGE_MANAGER_FLAGS \
     python3-wheel \
     ninja-build
 
-cd ~/
-if [ -d aom ]; then
-    git -C aom pull
-else
-    git clone --depth 1 https://aomedia.googlesource.com/aom
+
+if true; then
+    cd ~/
+    if [ -d svtav1 ]; then
+        git -C svtav1 pull
+    else
+        git clone --depth=1 https://gitlab.com/AOMediaCodec/SVT-AV1.git svtav1
+    fi
+    cd svtav1/Build/linux
+    ./build.sh -j$(nproc) -g Ninja -i release static enable-lto enable-native --bindir "$HOME/ffmpeg_build"
 fi
 
-mkdir -p ~/aom_build
-cd ~/aom_build
-cmake -G "Unix Makefiles" -DCMAKE_INSTALL_PREFIX="$HOME/ffmpeg_build" -DENABLE_SHARED=off -DENABLE_NASM=on ../aom 2>&1
-make -j$(grep -c ^processor /proc/cpuinfo)
-make install
 
-mkdir -p ~/vmaf_build
-cd ~/vmaf_build
-if [ -d vmaf ]; then
-    git -C vmaf pull
-else
-    git clone https://github.com/Netflix/vmaf.git
+
+if false; then
+    cd ~/
+    if [ -d aom ]; then
+        git -C aom pull
+    else
+        git clone --depth 1 https://aomedia.googlesource.com/aom
+    fi
+    mkdir -p aom/build && cd aom/build
+    BUILD_FLAGS="-static -march=native -g3 -flto=$(nproc)"
+    cmake .. -G "Ninja" -DCMAKE_BUILD_TYPE=Release -DAOM_EXTRA_C_FLAGS="$BUILD_FLAGS"\
+        -DAOM_EXTRA_CXX_FLAGS="$BUILD_FLAGS" -DCMAKE_INSTALL_PREFIX="$HOME/ffmpeg_build" \
+        -DAOM_EXTRA_EXE_LINKER_FLAGS="$BUILD_FLAGS" -DENABLE_DOCS=0 \
+        -DENABLE_TESTS=0 -DBUILD_SHARED_LIBS=0 
+    ninja -j $(nproc)
+    ninja install
 fi
-DISPLAY= && sudo pip3 install meson Cython numpy
-cd vmaf/libvmaf
-meson setup --buildtype release --libdir lib build
-ninja -vC build
-sudo ninja -vC build install
-sudo ldconfig
+
+
+
+if false; then
+    cd ~/
+    if [ -d vmaf ]; then
+        git -C vmaf pull
+    else
+        git clone --depth 1 https://github.com/Netflix/vmaf.git
+    fi
+    DISPLAY= && sudo pip3 install meson Cython numpy
+    cd vmaf/libvmaf
+    meson setup --buildtype release --libdir lib build
+    ninja -vC build
+    sudo ninja -vC build install
+    sudo ldconfig
+fi
+
+
 
 mkdir -p ~/ffmpeg_sources
 cd ~/ffmpeg_sources
@@ -93,10 +118,11 @@ PKG_CONFIG_PATH="$HOME/ffmpeg_build/lib/pkgconfig" ./configure \
     --enable-libx264 \
     --enable-libx265 \
     --enable-libvmaf \
-    --enable-nonfree \
+    --enable-libsvtav1 \
+    --enable-nonfree
    
 
-make -j$(grep -c ^processor /proc/cpuinfo)
+make -j$(nproc)
 sudo make install
 hash -r
 source ~/.profile
