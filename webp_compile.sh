@@ -16,7 +16,7 @@ rm -f v1.2.1.tar.gz
 cd libwebp-1.2.1
 ./autogen.sh
 ./configure --enable-shared=false
-make -j$(grep -c ^processor /proc/cpuinfo) 2>&1
+make -j$(nproc) 2>&1
 sudo make install
 
 hash -r

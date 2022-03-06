@@ -1,5 +1,6 @@
 #!/bin/bash
 # set -x
+set -e
 
 
 if [[ "$OSTYPE" == "linux-gnu"* ]]; then
@@ -79,7 +80,7 @@ fi
 if ! which terser > /dev/null; then
 if ! which node > /dev/null; then
 	echo "Installing node (This may take a minute or two)"
-	curl -sL https://deb.nodesource.com/setup_13.x | sudo -E bash -
+	curl -fsSL https://deb.nodesource.com/setup_16.x | sudo -E bash -
 	$OS_PACKAGE_MANAGER install $OS_PACKAGE_MANAGER_FLAGS nodejs
 fi
 if ! which npm > /dev/null; then
@@ -94,7 +95,7 @@ fi
 if ! which cleancss > /dev/null; then
 if ! which node > /dev/null; then
 	echo "Installing node (This may take a minute or two)"
-	curl -sL https://deb.nodesource.com/setup_13.x | sudo -E bash -
+	curl -fsSL https://deb.nodesource.com/setup_16.x | sudo -E bash -
 	$OS_PACKAGE_MANAGER install $OS_PACKAGE_MANAGER_FLAGS nodejs
 fi
 if ! which npm > /dev/null; then
@@ -109,7 +110,7 @@ fi
 if ! which html-minifier-terser > /dev/null; then
 if ! which node > /dev/null; then
 	echo "Installing node (This may take a minute or two)"
-	curl -sL https://deb.nodesource.com/setup_13.x | sudo -E bash -
+	curl -fsSL https://deb.nodesource.com/setup_16.x | sudo -E bash -
 	$OS_PACKAGE_MANAGER install $OS_PACKAGE_MANAGER_FLAGS nodejs
 fi
 if ! which npm > /dev/null; then
